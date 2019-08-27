@@ -1,0 +1,6 @@
+@model ShapeViewModel<UrlTreeAdminNode>
+
+<div class="@(Model.Value.Enabled ? "" : "disabled")">
+    <span>@T["Url Tree"]</span>
+        <span class="text-muted">- @T["Url Tree"]</span>
+</div>
