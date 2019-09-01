@@ -21,6 +21,9 @@ namespace ThisNetWorks.OrchardCore.AdminTree.AdminNodes
             return Initialize<UrlTreeAdminNodeViewModel>("UrlTreeAdminNode_Fields_TreeEdit", model =>
             {
                 model.IconForTree = treeNode.IconForTree;
+                model.TreeRootDisplayPattern = treeNode.TreeRootDisplayPattern;
+                model.UseItemSegmentForDisplay = treeNode.UseItemSegmentForDisplay;
+                model.ItemDisplayPattern = treeNode.ItemDisplayPattern;
             }).Location("Content");
         }
 
@@ -28,9 +31,16 @@ namespace ThisNetWorks.OrchardCore.AdminTree.AdminNodes
         {
             var model = new UrlTreeAdminNodeViewModel();
 
-            if (await updater.TryUpdateModelAsync(model, Prefix, x => x.IconForTree))
+            if (await updater.TryUpdateModelAsync(model, Prefix,
+                x => x.IconForTree,
+                x => x.TreeRootDisplayPattern,
+                x => x.UseItemSegmentForDisplay,
+                x => x.ItemDisplayPattern))
             {
                 treeNode.IconForTree = model.IconForTree;
+                treeNode.TreeRootDisplayPattern = model.TreeRootDisplayPattern;
+                treeNode.UseItemSegmentForDisplay = model.UseItemSegmentForDisplay;
+                treeNode.ItemDisplayPattern = model.ItemDisplayPattern;
             };
 
             return Edit(treeNode);

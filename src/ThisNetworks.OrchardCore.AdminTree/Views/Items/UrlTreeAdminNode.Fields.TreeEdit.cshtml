@@ -5,6 +5,15 @@
 <script asp-src="https://cdn.jsdelivr.net/npm/vue@2.6.10/dist/vue.min.js" debug-src="https://cdn.jsdelivr.net/npm/vue@2.6.10/dist/vue.js" asp-name="vuejs" at="Foot"></script>
 <script asp-src="~/OrchardCore.AdminMenu/Scripts/admin-menu-icon-picker.min.js" debug-src="~/OrchardCore.AdminMenu/Scripts/admin-menu-icon-picker.js" at="Foot" depends-on="admin"></script>
 
+<script asp-name="codemirror" depends-on="admin" at="Foot"></script>
+<script asp-name="codemirror-mode-javascript" at="Foot"></script>
+<script asp-name="codemirror-addon-display-autorefresh" at="Foot"></script>
+<script asp-name="codemirror-addon-mode-simple" at="Foot"></script>
+<script asp-name="codemirror-addon-mode-multiplex" at="Foot"></script>
+<script asp-name="codemirror-mode-xml" at="Foot"></script>
+
+<script asp-src="~/OrchardCore.Liquid/codemirror/liquid.js" at="Foot"></script>
+
 <h5>@T["Lists"]</h5>
 
 <div class="row mb-4">
@@ -39,10 +48,32 @@
             </div>
 
         </fieldset>
-
     </div>
 </div>
 
+<div class="form-group row">
+    <div class="col-lg">
+        <label asp-for="TreeRootDisplayPattern">@T["Tree display pattern"]</label>
+        <textarea asp-for="TreeRootDisplayPattern" rows="5" class="form-control"></textarea>
+        <span class="hint">@T["Tree display pattern, uses liquid."]</span>
+    </div>
+</div>
+<div class="form-group row">
+    <div class="col-lg">
+        <div class="custom-control custom-checkbox">
+            <input type="checkbox" class="custom-control-input" asp-for="UseItemSegmentForDisplay" checked="@Model.UseItemSegmentForDisplay" />
+            <label class="custom-control-label" asp-for="UseItemSegmentForDisplay">@T["Use items url segment for display"]</label>
+            <span class="hint">— @T["Check to use the items url segment for the display text in the menu."]</span>
+        </div>
+    </div>
+</div>
+<div class="form-group row">
+    <div class="col-lg">
+        <label asp-for="ItemDisplayPattern">@T["Item display pattern"]</label>
+        <textarea asp-for="ItemDisplayPattern" rows="5" class="form-control"></textarea>
+        <span class="hint">@T["Item display pattern, uses liquid."]</span>
+    </div>
+</div>
 
 <div id="iconPickerVue">
     <div class="modal" id="iconPickerModal" tabindex="-1" role="dialog" aria-labelledby="iconPickerModal" aria-hidden="true">
@@ -86,4 +117,25 @@
             $('#sample-icon-' + node).replaceWith('<i id="sample-icon-' + node + '" class=" "></i>'); // changing the class is not enough.
         });
     });
+</script>
+
+<script at="Foot" depends-on="jquery">
+    //<![CDATA[
+    $(function () {
+        editor1 = CodeMirror.fromTextArea(document.getElementById('@Html.IdFor(x => x.TreeRootDisplayPattern)'), {
+            autoRefresh: true,
+            lineNumbers: true,
+            styleActiveLine: true,
+            matchBrackets: true,
+            mode: { name: "liquid" },
+        });
+        editor2 = CodeMirror.fromTextArea(document.getElementById('@Html.IdFor(x => x.ItemDisplayPattern)'), {
+            autoRefresh: true,
+            lineNumbers: true,
+            styleActiveLine: true,
+            matchBrackets: true,
+            mode: { name: "liquid" },
+        });
+    });
+    //]]>
 </script>
