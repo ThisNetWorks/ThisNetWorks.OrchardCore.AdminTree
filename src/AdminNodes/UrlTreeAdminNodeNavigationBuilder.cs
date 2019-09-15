@@ -8,7 +8,7 @@ using Microsoft.Extensions.Localization;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using OrchardCore.AdminMenu.Services;
-using OrchardCore.Autoroute.Model;
+using OrchardCore.Autoroute.Models;
 using OrchardCore.ContentManagement;
 using OrchardCore.ContentManagement.Metadata;
 using OrchardCore.ContentManagement.Records;
@@ -24,6 +24,7 @@ namespace ThisNetWorks.OrchardCore.AdminTree.AdminNodes
     //TODO Breaks if you have two of these.
     public class UrlTreeAdminNodeNavigationBuilder : IAdminNodeNavigationBuilder
     {
+        private readonly ISiteService _siteService;
         private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly IContentDefinitionManager _contentDefinitionManager;
         private readonly ILiquidTemplateManager _liquidTemplatemanager;
@@ -37,6 +38,7 @@ namespace ThisNetWorks.OrchardCore.AdminTree.AdminNodes
         private readonly AutorouteOptions _options;
         private readonly IStringLocalizer<UrlTreeAdminNodeNavigationBuilder> T;
         public UrlTreeAdminNodeNavigationBuilder(
+            ISiteService siteService,
             IHttpContextAccessor httpContextAccessor,
             IContentDefinitionManager contentDefinitionManager,
             ILiquidTemplateManager liquidTemplateManager,
@@ -46,6 +48,7 @@ namespace ThisNetWorks.OrchardCore.AdminTree.AdminNodes
             IStringLocalizer<UrlTreeAdminNodeNavigationBuilder> stringLocalizer,
             ILogger<UrlTreeAdminNodeNavigationBuilder> logger)
         {
+            _siteService = siteService;
             _httpContextAccessor = httpContextAccessor;
             _contentDefinitionManager = contentDefinitionManager;
             _liquidTemplatemanager = liquidTemplateManager;
@@ -73,7 +76,8 @@ namespace ThisNetWorks.OrchardCore.AdminTree.AdminNodes
                 .With<AutoroutePartIndex>(o => o.Published)
                 .ListAsync()).ToList();
 
-            var homeRoute = _httpContextAccessor.HttpContext.Features.Get<HomeRouteFeature>()?.HomeRoute;
+
+            var homeRoute = (await _siteService.GetSiteSettingsAsync()).HomeRoute;
 
             // Return on no homeroute (initially)
             if (homeRoute == null)
