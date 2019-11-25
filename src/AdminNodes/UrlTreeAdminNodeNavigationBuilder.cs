@@ -116,8 +116,14 @@ namespace ThisNetWorks.OrchardCore.AdminTree.AdminNodes
             foreach (var ci in contentItems)
             {
                 var part = ci.As<AutoroutePart>();
-                var url = Tuple.Create(part.Path.Split('/'), ci);
-                await BuildLevelAsync(levels, url, contentItems, node);
+                var contentItemSegments = new ContentItemSegments
+                {
+                    Segments = part.Path.Split('/'),
+                    Path = part.Path,
+                    ContentItem = ci
+                };
+                _logger.LogDebug("Building level for {Path} for content item {DisplayText}", contentItemSegments.Path, contentItemSegments.ContentItem.DisplayText);
+                await BuildLevelAsync(levels, contentItemSegments, contentItems, node);
             }
 
             //TODO Dynamic string localization not supported yet.
@@ -163,21 +169,21 @@ namespace ThisNetWorks.OrchardCore.AdminTree.AdminNodes
                         menuLevel.Permission(ContentTypePermissions.CreateDynamicPermission(
                             ContentTypePermissions.PermissionTemplates[global::OrchardCore.Contents.Permissions.EditContent.Name], contentTypeDefinition));
                     }
+                    //menuLevel.Caption(T["test"]);
                     await BuildMenuLevels(menuLevel, level.SubLevels);
                 });
             }
         }
 
-        private async Task BuildLevelAsync(List<Level> levels, Tuple<string[], ContentItem> url, List<ContentItem> contentItems, UrlTreeAdminNode node)
+        private async Task BuildLevelAsync(List<Level> levels, ContentItemSegments contentItemSegments, List<ContentItem> contentItems, UrlTreeAdminNode node)
         {
-            _logger.LogDebug("Parsing url {Url}", url.Item1);
             Level level = null;
-            for (var i = 0; i < url.Item1.Length; i++)
+            for (var i = 0; i < contentItemSegments.Segments.Length; i++)
             {
                 // Assign
                 if (level == null)
                 {
-                    level = levels.FirstOrDefault(x => x.Index == i && x.Segment == url.Item1[i]);
+                    level = levels.FirstOrDefault(x => x.Index == i && x.Segment == contentItemSegments.Segments[i]);
                 }
 
                 // If not there already, add it.
@@ -186,33 +192,41 @@ namespace ThisNetWorks.OrchardCore.AdminTree.AdminNodes
                     level = new Level()
                     {
                         Index = i,
-                        Segment = url.Item1[i]
+                        Segment = contentItemSegments.Segments[i],
+                        Path = contentItemSegments.Path
                     };
 
-                    _logger.LogDebug("Adding level index {Index}, Segment {Segment}, DisplayText {DisplayText}", level.Index, level.Segment, url.Item2.DisplayText);
+                    _logger.LogDebug("Adding level for Segment {Segment}, DisplayText {DisplayText}", level.Segment, contentItemSegments.ContentItem.DisplayText);
                     levels.Add(level);
                 }
 
                 // If there is a next level, create it.
                 if (i > level.Index)
                 {
-                    var newArray = new string[url.Item1.Length - i];
-                    Array.Copy(url.Item1, i, newArray, 0, url.Item1.Length - i);
-                    var subLevelUrl = Tuple.Create(newArray, url.Item2);
+                    var newSegments = new string[contentItemSegments.Segments.Length - i];
+                    Array.Copy(contentItemSegments.Segments, i, newSegments, 0, contentItemSegments.Segments.Length - i);
+                    var subLevelSegments = new ContentItemSegments
+                    {
+                        Segments = newSegments,
+                        Path = contentItemSegments.Path,
+                        ContentItem = contentItemSegments.ContentItem
+                    };
 
-                    await BuildLevelAsync(level.SubLevels, subLevelUrl, contentItems, node);
+                    _logger.LogDebug("Building sublevel for {Path} for content item {DisplayText}", contentItemSegments.Path, contentItemSegments.ContentItem.DisplayText);
+                    await BuildLevelAsync(level.SubLevels, subLevelSegments, contentItems, node);
                     break;
                 }
 
                 // If this is the last one in the segment
-                if (i == url.Item1.Length - 1)
+                if (i == contentItemSegments.Segments.Length - 1)
                 {
-                    var lastCi = contentItems.FirstOrDefault(x => x.As<AutoroutePart>().Path.EndsWith(level.Segment));
-
+                    var lastCi = contentItems.FirstOrDefault(x => x.As<AutoroutePart>().Path == level.Path);
+                    _logger.LogDebug("Assigning content item to path {Path}, for content item {DisplayText}", level.Path, lastCi.DisplayText);
                     level.ContentItem = lastCi;
                     if (node.UseItemSegmentForDisplay || level.ContentItem == null)
                     {
                         level.DisplayText = new LocalizedString(level.Segment, level.Segment);
+                        _logger.LogDebug("Using segment {Segment} for menu text for path {Path}, for content item {DisplayText}", level.Segment, level.Path, lastCi.DisplayText);
                     }
                     else
                     {
@@ -223,13 +237,22 @@ namespace ThisNetWorks.OrchardCore.AdminTree.AdminNodes
                         // In case of bad liquid
                         if (display == null)
                         {
+                            _logger.LogDebug("Bad liquid setting display text for segment {Segment} on path {Path}", level.Segment, level.Path);
                             level.DisplayText = new LocalizedString(level.Segment, level.Segment);
                         }
                         else
                         {
+
                             level.DisplayText = new LocalizedString(display, display);
                         }
                     }
+                }
+                // this is the problem, it's not always finding a content item still
+                // but this is not the fix
+                if (String.IsNullOrEmpty(level.DisplayText))
+                {
+                    _logger.LogDebug("Did not find a final segment for this level segment {Segment}", level.Segment);
+                    level.DisplayText = new LocalizedString(level.Segment, level.Segment);
                 }
             }
         }
@@ -238,10 +261,18 @@ namespace ThisNetWorks.OrchardCore.AdminTree.AdminNodes
         {
             public int Index { get; set; }
             public string Segment { get; set; }
+            public string Path { get; set; }
             public LocalizedString DisplayText { get; set; }
             public ContentItem ContentItem { get; set; }
 
             public List<Level> SubLevels { get; set; } = new List<Level>();
+        }
+
+        public class ContentItemSegments
+        {
+            public string[] Segments { get; set; }
+            public string Path { get; set; }
+            public ContentItem ContentItem { get; set; }
         }
 
         private List<string> AddPrefixToClasses(string unprefixed)
