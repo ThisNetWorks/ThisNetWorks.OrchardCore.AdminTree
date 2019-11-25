@@ -1,4 +1,9 @@
-@model UrlTreeAdminNodeViewModel
+
+@using OrchardCore.ContentManagement
+@using OrchardCore.ContentManagement.Records
+@using YesSql;
+
+@model TaxonomyTermsAdminNodeViewModel
 
 <style asp-src="~/OrchardCore.AdminMenu/Styles/admin-menu-icon-picker.min.css" debug-src="~/OrchardCore.AdminMenu/Styles/admin-menu-icon-picker.css" at="Head" depends-on="admin"></style>
 
@@ -14,7 +19,25 @@
 
 <script asp-src="~/OrchardCore.Liquid/codemirror/liquid.js" at="Foot"></script>
 
+@inject ISession Session
+
+@{
+    var taxonomies = await Session.Query<ContentItem, ContentItemIndex>().Where(x => x.ContentType == "Taxonomy" && x.Latest).ListAsync();
+}
+
 <h5>@T["Lists"]</h5>
+
+<div class="row">
+    <div class="form-group col-sm-6">
+        <label asp-for="TaxonomyContentItemId">@T["Taxonomy"]</label>
+        <select asp-for="TaxonomyContentItemId" class="form-control">
+            @foreach (var taxonomy in taxonomies)
+            {
+                <option value="@taxonomy.ContentItemId">@taxonomy</option>
+            }
+        </select>
+    </div>
+</div>
 
 <div class="row mb-4">
     <div class="col-xl-6">
@@ -53,25 +76,16 @@
 
 <div class="form-group row">
     <div class="col-lg">
-        <label asp-for="TreeRootDisplayPattern">@T["Tree display pattern"]</label>
-        <textarea asp-for="TreeRootDisplayPattern" rows="5" class="form-control"></textarea>
-        <span class="hint">@T["Tree display pattern, uses liquid."]</span>
+        <label asp-for="TaxonomyDisplayPattern">@T["Taxonomy display pattern"]</label>
+        <textarea asp-for="TaxonomyDisplayPattern" rows="5" class="form-control"></textarea>
+        <span class="hint">@T["Taxonomy display pattern, uses liquid."]</span>
     </div>
 </div>
 <div class="form-group row">
     <div class="col-lg">
-        <div class="custom-control custom-checkbox">
-            <input type="checkbox" class="custom-control-input" asp-for="UseItemSegmentForDisplay" checked="@Model.UseItemSegmentForDisplay" />
-            <label class="custom-control-label" asp-for="UseItemSegmentForDisplay">@T["Use items url segment for display"]</label>
-            <span class="hint">— @T["Check to use the items url segment for the display text in the menu."]</span>
-        </div>
-    </div>
-</div>
-<div class="form-group row">
-    <div class="col-lg">
-        <label asp-for="ItemDisplayPattern">@T["Item display pattern"]</label>
-        <textarea asp-for="ItemDisplayPattern" rows="5" class="form-control"></textarea>
-        <span class="hint">@T["Item display pattern, uses liquid."]</span>
+        <label asp-for="TermDisplayPattern">@T["Term display pattern"]</label>
+        <textarea asp-for="TermDisplayPattern" rows="5" class="form-control"></textarea>
+        <span class="hint">@T["Term display pattern, uses liquid."]</span>
     </div>
 </div>
 
@@ -122,14 +136,14 @@
 <script at="Foot" depends-on="jquery">
     //<![CDATA[
     $(function () {
-        editor1 = CodeMirror.fromTextArea(document.getElementById('@Html.IdFor(x => x.TreeRootDisplayPattern)'), {
+        editor1 = CodeMirror.fromTextArea(document.getElementById('@Html.IdFor(x => x.TaxonomyDisplayPattern)'), {
             autoRefresh: true,
             lineNumbers: true,
             styleActiveLine: true,
             matchBrackets: true,
             mode: { name: "liquid" },
         });
-        editor2 = CodeMirror.fromTextArea(document.getElementById('@Html.IdFor(x => x.ItemDisplayPattern)'), {
+        editor2 = CodeMirror.fromTextArea(document.getElementById('@Html.IdFor(x => x.TermDisplayPattern)'), {
             autoRefresh: true,
             lineNumbers: true,
             styleActiveLine: true,
