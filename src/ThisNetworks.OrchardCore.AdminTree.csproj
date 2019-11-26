@@ -9,13 +9,13 @@
   <ItemGroup>
     <FrameworkReference Include="Microsoft.AspNetCore.App" />
   </ItemGroup>
-
+<!--
   <ItemGroup>
     <PackageReference Include="OrchardCore.Application.Cms.Core.Targets" Version="1.0.0-rc1-10854" />
   </ItemGroup>
-
-  <!--
-    <ItemGroup>
+-->
+  
+      <ItemGroup>
     <ProjectReference Include="..\..\..\OrchardCore\OrchardCore.AdminMenu.Abstractions\OrchardCore.AdminMenu.Abstractions.csproj" />
     <ProjectReference Include="..\..\..\OrchardCore\OrchardCore.ContentManagement.Abstractions\OrchardCore.ContentManagement.Abstractions.csproj" />
     <ProjectReference Include="..\..\..\OrchardCore\OrchardCore.ContentManagement\OrchardCore.ContentManagement.csproj" />
@@ -25,8 +25,9 @@
     <ProjectReference Include="..\..\..\OrchardCore\OrchardCore.ResourceManagement\OrchardCore.ResourceManagement.csproj" />
     <ProjectReference Include="..\..\OrchardCore.Autoroute\OrchardCore.Autoroute.csproj" />
     <ProjectReference Include="..\..\OrchardCore.Contents\OrchardCore.Contents.csproj" />
+    <ProjectReference Include="..\..\OrchardCore.Taxonomies\OrchardCore.Taxonomies.csproj" />
   </ItemGroup>
-  -->
+  
 
   <!-- 
   

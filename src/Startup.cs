@@ -15,6 +15,16 @@ namespace ThisNetworks.OrchardCore.AdminTree
             services.AddSingleton<IAdminNodeProviderFactory>(new AdminNodeProviderFactory<UrlTreeAdminNode>());
             services.AddScoped<IAdminNodeNavigationBuilder, UrlTreeAdminNodeNavigationBuilder>();
             services.AddScoped<IDisplayDriver<MenuItem>, UrlTreeAdminNodeDriver>();
+
+
+            services.AddSingleton<IAdminNodeProviderFactory>(new AdminNodeProviderFactory<TaxonomyTermsAdminNode>());
+            services.AddScoped<IAdminNodeNavigationBuilder, TaxonomyTermsAdminNodeNavigationBuilder>();
+            services.AddScoped<IDisplayDriver<MenuItem>, TaxonomyTermsAdminNodeDriver>();
+
+
+            services.AddSingleton<IAdminNodeProviderFactory>(new AdminNodeProviderFactory<TaxonomyContentsAdminNode>());
+            services.AddScoped<IAdminNodeNavigationBuilder, TaxonomyContentsAdminNodeNavigationBuilder>();
+            services.AddScoped<IDisplayDriver<MenuItem>, TaxonomyContentsAdminNodeDriver>();
         }
     }
 }

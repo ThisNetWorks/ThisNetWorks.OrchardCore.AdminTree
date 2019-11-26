@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Fluid;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.Localization;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
@@ -75,7 +76,8 @@ namespace ThisNetWorks.OrchardCore.AdminTree.AdminNodes
             {
                 return;
             }
-            
+
+            var homeRoute = (await _siteService.GetSiteSettingsAsync()).HomeRoute;
             var templateContext = new TemplateContext();
             templateContext.SetValue("ContentItem", taxonomy);
 
@@ -87,7 +89,7 @@ namespace ThisNetWorks.OrchardCore.AdminTree.AdminNodes
             await builder.AddAsync(new LocalizedString(taxonomyDisplayText, taxonomyDisplayText), async taxonomyRoot =>
             {
                 //var contentTypeDefinition = _contentDefinitionManager.GetTypeDefinition(homeRouteContentItem.ContentType);
-                //urlTreeRoot.Action(homeRouteMetadata.AdminRouteValues["Action"] as string, homeRouteMetadata.AdminRouteValues["Controller"] as string, homeRouteMetadata.AdminRouteValues);
+                taxonomyRoot.Action(homeRoute["Action"] as string, homeRoute["Controller"] as string, homeRoute);
                 //urlTreeRoot.Resource(homeRouteContentItem);
                 taxonomyRoot.Priority(node.Priority);
                 taxonomyRoot.Position(node.Position);
@@ -96,14 +98,19 @@ namespace ThisNetWorks.OrchardCore.AdminTree.AdminNodes
 
                 //taxonomyRoot.Permission(ContentTypePermissions.CreateDynamicPermission(
                 //    ContentTypePermissions.PermissionTemplates[global::OrchardCore.Contents.Permissions.EditContent.Name], contentTypeDefinition));
-                await BuildMenuLevels(taxonomyRoot, termEntries, 0);
+                await BuildMenuLevels(taxonomyRoot, termEntries, 0, homeRoute);
             });
         }
 
-        private async Task BuildMenuLevels(NavigationItemBuilder urlTreeRoot, List<TermMenuEntry> termMenuEntries, int level)
+        private async Task BuildMenuLevels(NavigationItemBuilder urlTreeRoot, List<TermMenuEntry> termMenuEntries, int level, RouteValueDictionary homeRoute, TermMenuEntry parent = null)
         {
             foreach (var termMenuEntry in termMenuEntries.Where(x => x.Level == level))
             {
+                if (parent != null && termMenuEntry.Parent != parent)
+                {
+                    continue;
+                }
+
                 //ContentItemMetadata cim = null;
                 // Not all segments will have a content item associated with them.
                 //if (termMenuEntry.ContentItem != null)
@@ -122,19 +129,21 @@ namespace ThisNetWorks.OrchardCore.AdminTree.AdminNodes
                 {
                     if (termMenuEntry.Term != null)
                     {
+                        menuLevel.Action(homeRoute["Action"] as string, homeRoute["Controller"] as string, homeRoute);
                         //menuLevel.Action(cim.AdminRouteValues["Action"] as string, cim.AdminRouteValues["Controller"] as string, cim.AdminRouteValues);
                         //menuLevel.Resource(termMenuEntry.ContentItem);
                         //var contentTypeDefinition = _contentDefinitionManager.GetTypeDefinition(termMenuEntry.ContentItem.ContentType);
                         //menuLevel.Permission(ContentTypePermissions.CreateDynamicPermission(
                         //    ContentTypePermissions.PermissionTemplates[global::OrchardCore.Contents.Permissions.EditContent.Name], contentTypeDefinition));
                     }
+
                     //menuLevel.Caption(T["test"]);
-                    await BuildMenuLevels(menuLevel, termMenuEntries, level + 1);
+                    await BuildMenuLevels(menuLevel, termMenuEntries, level + 1, homeRoute, termMenuEntry);
                 });
             }
         }
 
-        private void PopulateTermEntries(List<TermMenuEntry> termEntries, IEnumerable<ContentItem> contentItems, int level)
+        private void PopulateTermEntries(List<TermMenuEntry> termEntries, IEnumerable<ContentItem> contentItems, int level, TermMenuEntry parent = null)
         {
             foreach (var contentItem in contentItems)
             {
@@ -148,6 +157,7 @@ namespace ThisNetWorks.OrchardCore.AdminTree.AdminNodes
                 var termEntry = new TermMenuEntry
                 {
                     Term = contentItem,
+                    Parent = parent,
                     Level = level,
                     IsLeaf = children.Length == 0
                 };
@@ -156,7 +166,7 @@ namespace ThisNetWorks.OrchardCore.AdminTree.AdminNodes
 
                 if (children.Length > 0)
                 {
-                    PopulateTermEntries(termEntries, children, level + 1);
+                    PopulateTermEntries(termEntries, children, level + 1, termEntry);
                 }
             }
         }
@@ -173,6 +183,7 @@ namespace ThisNetWorks.OrchardCore.AdminTree.AdminNodes
         public class TermMenuEntry
         {
             public ContentItem Term { get; set; }
+            public TermMenuEntry Parent { get; set; }
             public int Level { get; set; }
             public bool IsLeaf { get; set; }
         }

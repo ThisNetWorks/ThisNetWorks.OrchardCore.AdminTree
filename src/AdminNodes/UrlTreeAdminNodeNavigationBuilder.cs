@@ -118,13 +118,30 @@ namespace ThisNetWorks.OrchardCore.AdminTree.AdminNodes
                 var part = ci.As<AutoroutePart>();
                 var contentItemSegments = new ContentItemSegments
                 {
-                    Segments = part.Path.Split('/'),
+                    Segments = part.Path.Contains("/") ? part.Path.Split('/') : new string [] { part.Path },
                     Path = part.Path,
                     ContentItem = ci
                 };
+
                 _logger.LogDebug("Building level for {Path} for content item {DisplayText}", contentItemSegments.Path, contentItemSegments.ContentItem.DisplayText);
                 await BuildLevelAsync(levels, contentItemSegments, contentItems, node);
             }
+
+            var segments = new List<ContentItemSegment2>();
+            foreach(var ci in contentItems)
+            {
+                var part = ci.As<AutoroutePart>();
+                var contentItemSegment = new ContentItemSegment2
+                {
+                    Segments = part.Path.Contains("/") ? part.Path.Split('/') : new string[] { part.Path },
+                    Path = part.Path,
+                    ContentItem = ci
+                };
+                segments.Add(contentItemSegment);
+            }
+
+            var levels2 = new List<Level2>();
+            await BuildLevel2(levels2, segments, node, 0);
 
             //TODO Dynamic string localization not supported yet.
             await builder.AddAsync(new LocalizedString(rootMenuText, rootMenuText), async urlTreeRoot =>
@@ -175,6 +192,45 @@ namespace ThisNetWorks.OrchardCore.AdminTree.AdminNodes
             }
         }
 
+
+        private async Task BuildLevel2(List<Level2> levels, List<ContentItemSegment2> contentItemSegments, UrlTreeAdminNode node, int index)
+        {
+            var segments = contentItemSegments
+                .Where(x => x.Segments.Length > 0)
+                .Select(x => x.Segments[0]).Distinct();
+
+            foreach(var segment in segments)
+            {
+                // has no more segments. maybe null if no content item on that route.
+                // this needs to match on path. substring maybe?
+
+                var thisSegment = contentItemSegments
+                    .FirstOrDefault(x => x.Segments.Length == 1 && x.Segments[0] == segment);
+
+                var level = new Level2()
+                {
+                    Index = index,
+                    Segment = segment,
+                    Path = thisSegment?.Path,
+                    ContentItem = thisSegment?.ContentItem
+                };
+
+                var children = contentItemSegments.Where(x => x != thisSegment &&
+                    x.Segments.Length > 0 && x.Segments[0] == segment).ToList();
+
+                if (children.Count > 0)
+                {
+                    foreach (var child in children)
+                    {
+                        child.Segments = child.Segments.Skip(1).ToArray();
+                    }
+                    await BuildLevel2(level.SubLevels, children, node, index + 1);
+                    // This half works doing it here. need a better way to know if there is a blank / no ci route.
+                    levels.Add(level);
+                }
+            }
+
+        }
         private async Task BuildLevelAsync(List<Level> levels, ContentItemSegments contentItemSegments, List<ContentItem> contentItems, UrlTreeAdminNode node)
         {
             Level level = null;
@@ -196,7 +252,7 @@ namespace ThisNetWorks.OrchardCore.AdminTree.AdminNodes
                         Path = contentItemSegments.Path
                     };
 
-                    _logger.LogDebug("Adding level for Segment {Segment}, DisplayText {DisplayText}", level.Segment, contentItemSegments.ContentItem.DisplayText);
+                    _logger.LogDebug("Adding level {Level} for Segment {Segment}, DisplayText {DisplayText}", i, level.Segment, contentItemSegments.ContentItem.DisplayText);
                     levels.Add(level);
                 }
 
@@ -212,7 +268,7 @@ namespace ThisNetWorks.OrchardCore.AdminTree.AdminNodes
                         ContentItem = contentItemSegments.ContentItem
                     };
 
-                    _logger.LogDebug("Building sublevel for {Path} for content item {DisplayText}", contentItemSegments.Path, contentItemSegments.ContentItem.DisplayText);
+                    _logger.LogDebug("Building sublevel {Level} for {Path} for content item {DisplayText}", i, contentItemSegments.Path, contentItemSegments.ContentItem.DisplayText);
                     await BuildLevelAsync(level.SubLevels, subLevelSegments, contentItems, node);
                     break;
                 }
@@ -220,13 +276,18 @@ namespace ThisNetWorks.OrchardCore.AdminTree.AdminNodes
                 // If this is the last one in the segment
                 if (i == contentItemSegments.Segments.Length - 1)
                 {
-                    var lastCi = contentItems.FirstOrDefault(x => x.As<AutoroutePart>().Path == level.Path);
-                    _logger.LogDebug("Assigning content item to path {Path}, for content item {DisplayText}", level.Path, lastCi.DisplayText);
-                    level.ContentItem = lastCi;
-                    if (node.UseItemSegmentForDisplay || level.ContentItem == null)
+                    level.ContentItem = contentItems.FirstOrDefault(x => x.As<AutoroutePart>().Path == level.Path);
+                    //_logger.LogDebug("Assigning content item to path {Path}, for content item {DisplayText}", level.Path, lastCi.DisplayText);
+                    if (node.UseItemSegmentForDisplay)
                     {
                         level.DisplayText = new LocalizedString(level.Segment, level.Segment);
-                        _logger.LogDebug("Using segment {Segment} for menu text for path {Path}, for content item {DisplayText}", level.Segment, level.Path, lastCi.DisplayText);
+                        _logger.LogDebug("Using segment {Segment} for level {Level} menu text for path {Path}, for content item {DisplayText}", i, level.Segment, level.Path, level.ContentItem.DisplayText);
+                    }
+                    else if (level.ContentItem == null)
+                    {
+                        _logger.LogDebug("Content item is null, using segment {Segment} forlevel {Level} menu text for path {Path}", i, level.Segment, level.Path);
+
+                        level.DisplayText = new LocalizedString(level.Segment, level.Segment);
                     }
                     else
                     {
@@ -251,7 +312,7 @@ namespace ThisNetWorks.OrchardCore.AdminTree.AdminNodes
                 // but this is not the fix
                 if (String.IsNullOrEmpty(level.DisplayText))
                 {
-                    _logger.LogDebug("Did not find a final segment for this level segment {Segment}", level.Segment);
+                    _logger.LogDebug("Did not find a final segment for this level {Level} segment {Segment}", i, level.Segment);
                     level.DisplayText = new LocalizedString(level.Segment, level.Segment);
                 }
             }
@@ -269,6 +330,24 @@ namespace ThisNetWorks.OrchardCore.AdminTree.AdminNodes
         }
 
         public class ContentItemSegments
+        {
+            public string[] Segments { get; set; }
+            public string Path { get; set; }
+            public ContentItem ContentItem { get; set; }
+        }
+
+        public class Level2
+        {
+            public int Index { get; set; }
+            public string Segment { get; set; }
+            public string Path { get; set; }
+            public LocalizedString DisplayText { get; set; }
+            public ContentItem ContentItem { get; set; }
+
+            public List<Level2> SubLevels { get; set; } = new List<Level2>();
+        }
+
+        public class ContentItemSegment2
         {
             public string[] Segments { get; set; }
             public string Path { get; set; }
