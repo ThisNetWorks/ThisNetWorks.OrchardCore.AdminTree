@@ -1,0 +1,25 @@
+@model DisplayTaxonomyPartViewModel
+@using OrchardCore.ContentManagement
+@using OrchardCore.ContentManagement.Metadata.Models;
+
+@inject OrchardCore.ContentManagement.Display.IContentItemDisplayManager ContentItemDisplayManager
+
+@if (Model.ContentItems.Any())
+{
+    <ul class="list-group">
+        @foreach (var contentItem in Model.ContentItems)
+        {
+            var contentItemSummary = await ContentItemDisplayManager.BuildDisplayAsync(contentItem, Model.Context.Updater, "SummaryAdmin", Model.Context.GroupId);
+
+            <li class="list-group-item">
+                @await DisplayAsync(contentItemSummary)
+            </li>
+        }
+    </ul>
+
+    @await DisplayAsync(Model.Pager)
+}
+else
+{
+    <p class="alert alert-warning">@T["The term list is empty."]</p>
+}

@@ -21,7 +21,6 @@ using YesSql;
 
 namespace ThisNetWorks.OrchardCore.AdminTree.AdminNodes
 {
-    //TODO Breaks if you have two of these.
     public class TaxonomyContentsAdminNodeNavigationBuilder : IAdminNodeNavigationBuilder
     {
         private readonly ISiteService _siteService;

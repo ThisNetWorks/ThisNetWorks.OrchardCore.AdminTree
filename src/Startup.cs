@@ -1,9 +1,11 @@
 using Microsoft.Extensions.DependencyInjection;
 using OrchardCore.AdminMenu.Services;
+using OrchardCore.ContentManagement.Display.ContentDisplay;
 using OrchardCore.DisplayManagement.Handlers;
 using OrchardCore.Modules;
 using OrchardCore.Navigation;
 using ThisNetWorks.OrchardCore.AdminTree.AdminNodes;
+using ThisNetWorks.OrchardCore.AdminTree.Drivers;
 
 namespace ThisNetworks.OrchardCore.AdminTree
 {
@@ -20,6 +22,7 @@ namespace ThisNetworks.OrchardCore.AdminTree
             services.AddSingleton<IAdminNodeProviderFactory>(new AdminNodeProviderFactory<TaxonomyTermsAdminNode>());
             services.AddScoped<IAdminNodeNavigationBuilder, TaxonomyTermsAdminNodeNavigationBuilder>();
             services.AddScoped<IDisplayDriver<MenuItem>, TaxonomyTermsAdminNodeDriver>();
+            services.AddScoped<IContentPartDisplayDriver, TaxonomyPartDisplayDriver>();
 
 
             services.AddSingleton<IAdminNodeProviderFactory>(new AdminNodeProviderFactory<TaxonomyContentsAdminNode>());

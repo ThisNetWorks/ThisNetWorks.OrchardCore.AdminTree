@@ -77,6 +77,17 @@ namespace ThisNetWorks.OrchardCore.AdminTree.AdminNodes
                 return;
             }
 
+            //TODO this can move to a handler
+            //var taxonomyRouteValues = await _contentManager.PopulateAspectAsync<ContentItemMetadata>(taxonomy);
+
+            var taxonomyRouteValues = new RouteValueDictionary
+                {
+                    {"Area", "OrchardCore.Contents"},
+                    {"Controller", "Admin"},
+                    {"Action", "Display"},
+                    {"ContentItemId", taxonomy.ContentItemId}
+                };
+
             var homeRoute = (await _siteService.GetSiteSettingsAsync()).HomeRoute;
             var templateContext = new TemplateContext();
             templateContext.SetValue("ContentItem", taxonomy);
@@ -88,6 +99,7 @@ namespace ThisNetWorks.OrchardCore.AdminTree.AdminNodes
 
             await builder.AddAsync(new LocalizedString(taxonomyDisplayText, taxonomyDisplayText), async taxonomyRoot =>
             {
+                //TODO this can route direct to taxonomy
                 //var contentTypeDefinition = _contentDefinitionManager.GetTypeDefinition(homeRouteContentItem.ContentType);
                 taxonomyRoot.Action(homeRoute["Action"] as string, homeRoute["Controller"] as string, homeRoute);
                 //urlTreeRoot.Resource(homeRouteContentItem);
@@ -98,11 +110,11 @@ namespace ThisNetWorks.OrchardCore.AdminTree.AdminNodes
 
                 //taxonomyRoot.Permission(ContentTypePermissions.CreateDynamicPermission(
                 //    ContentTypePermissions.PermissionTemplates[global::OrchardCore.Contents.Permissions.EditContent.Name], contentTypeDefinition));
-                await BuildMenuLevels(taxonomyRoot, termEntries, 0, homeRoute);
+                await BuildMenuLevels(taxonomyRoot, termEntries, 0, taxonomyRouteValues);
             });
         }
 
-        private async Task BuildMenuLevels(NavigationItemBuilder urlTreeRoot, List<TermMenuEntry> termMenuEntries, int level, RouteValueDictionary homeRoute, TermMenuEntry parent = null)
+        private async Task BuildMenuLevels(NavigationItemBuilder urlTreeRoot, List<TermMenuEntry> termMenuEntries, int level, RouteValueDictionary taxonomyRouteValues, TermMenuEntry parent = null)
         {
             foreach (var termMenuEntry in termMenuEntries.Where(x => x.Level == level))
             {
@@ -129,7 +141,16 @@ namespace ThisNetWorks.OrchardCore.AdminTree.AdminNodes
                 {
                     if (termMenuEntry.Term != null)
                     {
-                        menuLevel.Action(homeRoute["Action"] as string, homeRoute["Controller"] as string, homeRoute);
+                        // TODO Clone taxonomyroutevalues and add this in.
+                        var termRouteValues = new RouteValueDictionary
+                        {
+                            {"Area", "OrchardCore.Contents"},
+                            {"Controller", "Admin"},
+                            {"Action", "Display"},
+                            {"ContentItemId", taxonomyRouteValues["ContentItemId"]},
+                            {"TaxonomyPart.TermContentItemId", termMenuEntry.Term.ContentItemId }
+                        };
+                        menuLevel.Action(termRouteValues["Action"] as string, termRouteValues["Controller"] as string, termRouteValues);
                         //menuLevel.Action(cim.AdminRouteValues["Action"] as string, cim.AdminRouteValues["Controller"] as string, cim.AdminRouteValues);
                         //menuLevel.Resource(termMenuEntry.ContentItem);
                         //var contentTypeDefinition = _contentDefinitionManager.GetTypeDefinition(termMenuEntry.ContentItem.ContentType);
@@ -138,7 +159,7 @@ namespace ThisNetWorks.OrchardCore.AdminTree.AdminNodes
                     }
 
                     //menuLevel.Caption(T["test"]);
-                    await BuildMenuLevels(menuLevel, termMenuEntries, level + 1, homeRoute, termMenuEntry);
+                    await BuildMenuLevels(menuLevel, termMenuEntries, level + 1, taxonomyRouteValues, termMenuEntry);
                 });
             }
         }
