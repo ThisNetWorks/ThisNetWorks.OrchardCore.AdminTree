@@ -1,9 +1,12 @@
 using Microsoft.Extensions.DependencyInjection;
 using OrchardCore.AdminMenu.Services;
+using OrchardCore.ContentManagement;
 using OrchardCore.ContentManagement.Display.ContentDisplay;
+using OrchardCore.Data.Migration;
 using OrchardCore.DisplayManagement.Handlers;
 using OrchardCore.Modules;
 using OrchardCore.Navigation;
+using ThisNetworks.OrchardCore.AdminTree.Models;
 using ThisNetWorks.OrchardCore.AdminTree.AdminNodes;
 using ThisNetWorks.OrchardCore.AdminTree.Drivers;
 
@@ -28,6 +31,11 @@ namespace ThisNetworks.OrchardCore.AdminTree
             services.AddSingleton<IAdminNodeProviderFactory>(new AdminNodeProviderFactory<TaxonomyContentsAdminNode>());
             services.AddScoped<IAdminNodeNavigationBuilder, TaxonomyContentsAdminNodeNavigationBuilder>();
             services.AddScoped<IDisplayDriver<MenuItem>, TaxonomyContentsAdminNodeDriver>();
+
+            // Term container part
+            services.AddContentPart<TermContainerPart>();
+            services.AddScoped<IContentPartDisplayDriver, TermContainerPartDisplayDriver>();
+            services.AddScoped<IDataMigration, Migrations>();
         }
     }
 }

@@ -5,10 +5,12 @@ using OrchardCore;
 using OrchardCore.ContentManagement;
 using OrchardCore.ContentManagement.Display.ContentDisplay;
 using OrchardCore.ContentManagement.Display.Models;
+using OrchardCore.ContentManagement.Metadata;
 using OrchardCore.DisplayManagement.ModelBinding;
 using OrchardCore.DisplayManagement.Views;
 using OrchardCore.Navigation;
 using OrchardCore.Taxonomies.Models;
+using ThisNetworks.OrchardCore.AdminTree.Models;
 using ThisNetWorks.OrchardCore.AdminTree.ViewModels;
 
 namespace ThisNetWorks.OrchardCore.AdminTree.Drivers
@@ -16,12 +18,15 @@ namespace ThisNetWorks.OrchardCore.AdminTree.Drivers
     public class TaxonomyPartDisplayDriver : ContentPartDisplayDriver<TaxonomyPart>
     {
         private readonly IOrchardHelper _orchardHelper;
+        private readonly IContentDefinitionManager _contentDefinitionManager;
 
         public TaxonomyPartDisplayDriver(
-            IOrchardHelper orchardHelper
+            IOrchardHelper orchardHelper,
+            IContentDefinitionManager contentDefinitionManager
             )
         {
             _orchardHelper = orchardHelper;
+            _contentDefinitionManager = contentDefinitionManager;
         }
 
         public override IDisplayResult Display(TaxonomyPart taxonomyPart, BuildPartDisplayContext context)
@@ -35,11 +40,17 @@ namespace ThisNetWorks.OrchardCore.AdminTree.Drivers
                 var termContentItem = await _orchardHelper.GetTaxonomyTermAsync(taxonomyPart.ContentItem.ContentItemId, model.TermContentItemId);
                 if (termContentItem != null)
                 {
-                    model.TermPart = termContentItem.As<TermPart>();
+                    model.TermContentItem = termContentItem;
                     model.ContentItems = (await _orchardHelper
                         .QueryCategorizedContentItemsAsync(q =>
                             q.Where(x => x.TaxonomyContentItemId == taxonomyPart.ContentItem.ContentItemId &&
                                 x.TermContentItemId == termContentItem.ContentItemId))).ToList();
+                }
+
+                var termContainer = termContentItem.As<TermContainerPart>();
+                if (termContainer != null)
+                {
+                    model.ContainedContentTypeDefinitions = termContainer.ContainedContentTypes.Select(contentType => _contentDefinitionManager.GetTypeDefinition(contentType));
                 }
 
                 model.TaxonomyPart = taxonomyPart;
