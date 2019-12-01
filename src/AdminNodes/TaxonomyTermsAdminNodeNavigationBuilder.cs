@@ -78,7 +78,7 @@ namespace ThisNetWorks.OrchardCore.AdminTree.AdminNodes
             }
 
             //TODO this can move to a handler
-            //var taxonomyRouteValues = await _contentManager.PopulateAspectAsync<ContentItemMetadata>(taxonomy);
+            var taxonomyRootRouteValues = await _contentManager.PopulateAspectAsync<ContentItemMetadata>(taxonomy);
 
             var taxonomyRouteValues = new RouteValueDictionary
                 {
@@ -101,8 +101,8 @@ namespace ThisNetWorks.OrchardCore.AdminTree.AdminNodes
             {
                 //TODO this can route direct to taxonomy
                 //var contentTypeDefinition = _contentDefinitionManager.GetTypeDefinition(homeRouteContentItem.ContentType);
-                taxonomyRoot.Action(homeRoute["Action"] as string, homeRoute["Controller"] as string, homeRoute);
-                //urlTreeRoot.Resource(homeRouteContentItem);
+                taxonomyRoot.Action(taxonomyRootRouteValues.EditorRouteValues["Action"] as string, taxonomyRootRouteValues.EditorRouteValues["Controller"] as string, taxonomyRootRouteValues.EditorRouteValues);
+                taxonomyRoot.Resource(taxonomy);
                 taxonomyRoot.Priority(node.Priority);
                 taxonomyRoot.Position(node.Position);
                 taxonomyRoot.LocalNav();

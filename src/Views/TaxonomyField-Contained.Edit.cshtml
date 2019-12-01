@@ -1,0 +1,98 @@
+@model OrchardCore.Taxonomies.ViewModels.EditTaxonomyFieldViewModel
+@using OrchardCore.Taxonomies.Settings;
+@using OrchardCore.ContentManagement.Metadata.Models;
+@using OrchardCore.Mvc.Utilities;
+
+@{
+    var settings = Model.PartFieldDefinition.GetSettings<TaxonomyFieldSettings>();
+    int previousLevel = 0;
+    var moveDivId = (Model.PartFieldDefinition.Name + "Move").HtmlClassify();
+}
+
+<label>@Model.PartFieldDefinition.DisplayName()</label>
+
+@if (!String.IsNullOrEmpty(settings.Hint))
+{
+    <span class="hint">— @settings.Hint</span>
+}
+
+@if (Model.Taxonomy == null)
+{
+    <div class="alert alert-danger" role="alert">
+        @T["The taxonomy could not be found. Please check the settings for this field."]
+    </div>
+}
+
+<div class="form-group">
+    @{
+        var selected = Model.TermEntries.FirstOrDefault(x => x.Selected);
+    }
+    <span>@selected.Term.DisplayText</span>
+    <button type="button" class="btn btn-secondary btn-sm ml-3" data-toggle="collapse" data-target="#@moveDivId"><i class="fas fa-arrows-alt"></i></button>
+</div>
+
+<div id="@moveDivId" class="form-group collapse">
+    @for (var i = 0; i < Model.TermEntries.Count; i++)
+    {
+        var entry = Model.TermEntries[i];
+        var term = entry.Term;
+
+        if (entry.Level == previousLevel + 1)
+        {
+            WriteLiteral("<div class=\"pl-3\">");
+        }
+
+        for (var e = entry.Level; e < previousLevel; e++)
+        {
+            WriteLiteral("</div>");
+        }
+
+        @if (!settings.Unique)
+        {
+            <div class="custom-control custom-checkbox">
+                @if (!settings.LeavesOnly || Model.TermEntries[i].IsLeaf)
+                {
+                    <input asp-for="@Model.TermEntries[i].Selected" type="checkbox" class="custom-control-input" />
+                }
+                else
+                {
+                    <input asp-for="@Model.TermEntries[i].Selected" type="checkbox" disabled="disabled" class="custom-control-input" />
+                }
+
+                <label class="custom-control-label" asp-for="@Model.TermEntries[i].Selected">
+                    @term
+                </label>
+                <input asp-for="@Model.TermEntries[i].ContentItemId" type="hidden" />
+            </div>
+        }
+        else
+        {
+            <div class="custom-control custom-radio">
+                @if (!settings.LeavesOnly || Model.TermEntries[i].IsLeaf)
+                {
+                    <input id="@Html.IdFor(x => x.TermEntries[i].Selected)"
+                           name="@Html.NameFor(m => m.UniqueValue)"
+                           type="radio"
+                           value="@Model.TermEntries[i].ContentItemId"
+                           checked="@(Model.TermEntries[i].Selected ? "checked" : null)"
+                           class="custom-control-input" />
+                }
+                else
+                {
+                    <input id="@Html.IdFor(x => x.TermEntries[i].Selected)"
+                           name="@Html.NameFor(m => m.UniqueValue)"
+                           type="radio"
+                           value="@Model.TermEntries[i].ContentItemId"
+                           disabled="disabled"
+                           checked="@(Model.TermEntries[i].Selected ? "checked" : null)"
+                           class="custom-control-input" />
+                }
+                <label class="custom-control-label" asp-for="@Model.TermEntries[i].Selected">
+                    @term
+                </label>
+            </div>
+        }
+
+        previousLevel = entry.Level;
+    }
+</div>

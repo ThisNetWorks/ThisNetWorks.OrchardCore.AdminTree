@@ -1,6 +1,5 @@
 @model DisplayTaxonomyPartViewModel
-@using OrchardCore.ContentManagement
-@using OrchardCore.ContentManagement.Metadata.Models;
+@using Microsoft.AspNetCore.Routing;
 
 @inject OrchardCore.ContentManagement.Display.IContentItemDisplayManager ContentItemDisplayManager
 @if (!Model.ContainedContentTypeDefinitions.Any())
@@ -12,35 +11,55 @@
 }
 else
 {
+    <h5>@Model.TermContentItem.DisplayText</h5>
     if (Model.ContainedContentTypeDefinitions.Count() == 1)
     {
         var contentTypeDefinition = Model.ContainedContentTypeDefinitions.FirstOrDefault();
-        <p>
-            <a class="btn btn-primary" asp-action="Create" asp-controller="Admin" asp-route-id="@contentTypeDefinition.Name" asp-route-area="OrchardCore.Contents" asp-route-ListPart.ContainerId="@Model.TermContentItem?.ContentItemId">
-                @T["Create {0}", contentTypeDefinition.DisplayName]
-            </a>
-        </p>
+
+        var rvd = new RouteValueDictionary
+            {
+                { "Area", "OrchardCore.Contents"},
+                { "Controller", "Admin"},
+                { "Action", "Create"},
+                { "Id", contentTypeDefinition.ContentTypeDefinition.Name},
+                { contentTypeDefinition.TaxonomyFieldName + ".TermContentItemId", Model.TermContentItem?.ContentItemId }
+            };
+        var href = Url.Action("Create", "Admin", rvd);
+
+        <a class="btn btn-primary" href="@href">
+            @T["Create {0}", contentTypeDefinition.ContentTypeDefinition.DisplayName]
+        </a>
     }
     else
     {
-        <p>
-            <div class="dropdown">
-                <a class="btn btn-primary dropdown-toggle" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                    @T["Create"]
-                </a>
+        <div class="dropdown">
+            <a class="btn btn-primary dropdown-toggle" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                @T["Create"]
+            </a>
 
-                <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
-                    @foreach (var containedContentTypeDefinition in Model.ContainedContentTypeDefinitions)
+            <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+                @foreach (var containedContentTypeDefinition in Model.ContainedContentTypeDefinitions)
+                {
+                var rvd = new RouteValueDictionary
                     {
-                        <a class="dropdown-item" asp-action="Create" asp-controller="Admin" asp-route-id="@containedContentTypeDefinition.Name" asp-route-area="OrchardCore.Contents" asp-route-ListPart.ContainerId="@Model.TermContentItem?.ContentItemId">@containedContentTypeDefinition.DisplayName</a>
-                    }
-                </div>
+                        { "Area", "OrchardCore.Contents"},
+                        { "Controller", "Admin"},
+                        { "Action", "Create"},
+                        { "Id", containedContentTypeDefinition.ContentTypeDefinition.Name},
+                        { containedContentTypeDefinition.TaxonomyFieldName + ".TermContentItemId", Model.TermContentItem?.ContentItemId }
+                    };
+                    var href = Url.Action("Create", "Admin", rvd);
+
+                    @*<a class="dropdown-item" asp-action="Create" asp-controller="Admin" asp-route-id="@containedContentTypeDefinition.Name" asp-route-area="OrchardCore.Contents" asp-route-ListPart.ContainerId="@Model.TermContentItem?.ContentItemId">@containedContentTypeDefinition.DisplayName</a>*@
+
+                    <a class="dropdown-item" href="@href">@containedContentTypeDefinition.ContentTypeDefinition.DisplayName</a>
+                }
             </div>
-        </p>
+        </div>
     }
     @if (Model.ContentItems.Any())
     {
-        <ul class="list-group">
+        <ul class="list-group mt-3">
             @foreach (var contentItem in Model.ContentItems)
             {
                 var contentItemSummary = await ContentItemDisplayManager.BuildDisplayAsync(contentItem, Model.Context.Updater, "SummaryAdmin", Model.Context.GroupId);
@@ -55,6 +74,6 @@ else
     }
     else
     {
-        <p class="alert alert-warning">@T["The term list is empty."]</p>
+        <p class="alert alert-warning mt-3">@T["The term list is empty."]</p>
     }
 }

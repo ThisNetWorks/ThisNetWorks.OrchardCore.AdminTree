@@ -36,6 +36,9 @@ namespace ThisNetworks.OrchardCore.AdminTree
             services.AddContentPart<TermContainerPart>();
             services.AddScoped<IContentPartDisplayDriver, TermContainerPartDisplayDriver>();
             services.AddScoped<IDataMigration, Migrations>();
+
+
+            services.AddScoped<IContentFieldDisplayDriver, TaxonomyFieldContainedDisplayDriver>();
         }
     }
 }
