@@ -1,0 +1,25 @@
+@model ThisNetWorks.OrchardCore.AdminTree.ViewModels.DisplayTaxonomyFieldContainedViewModel
+@using OrchardCore.Mvc.Utilities;
+
+@inject OrchardCore.ContentManagement.Display.IContentItemDisplayManager ContentItemDisplayManager
+
+@{
+    var name = (Model.PartFieldDefinition.PartDefinition.Name + "-" + Model.PartFieldDefinition.Name).HtmlClassify();
+}
+
+<div class="field field-type-taxonomyfield field-name-@name">
+
+    @foreach (var contentItemId in Model.TermContentItemIds)
+    {
+        @await DisplayAsync(await New.TaxonomyFieldContainedTerm(
+            TaxonomyContentItemId: Model.TaxonomyContentItemId,
+            TermContentItemId: contentItemId
+        ))
+
+        @await DisplayAsync(await New.TaxonomyFieldContainedContentItems(
+            TaxonomyContentItemId: Model.TaxonomyContentItemId,
+            TermContentItemId: contentItemId,
+            Context: Model.Context
+        ))
+    }
+</div>

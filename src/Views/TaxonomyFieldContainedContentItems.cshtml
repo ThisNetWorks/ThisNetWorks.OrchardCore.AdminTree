@@ -1,0 +1,33 @@
+@model dynamic
+
+@using Newtonsoft.Json.Linq;
+@using YesSql.Services;
+
+@inject OrchardCore.ContentManagement.Display.IContentItemDisplayManager ContentItemDisplayManager
+@{
+    var taxonomyContentItemId = Model.TaxonomyContentItemId as string;
+    var termContentItemId = Model.TermContentItemId as string;
+    var term = await Orchard.GetTaxonomyTermAsync(taxonomyContentItemId, termContentItemId);
+
+
+    var termArray = term.Content.Terms as JArray;
+    if (termArray != null)
+    {
+        var termIds = termArray.Select(x => x["ContentItemId"].ToString());
+        var termDisplayItems = await Orchard.QueryCategorizedContentItemsAsync(t => t.Where(x => x.TaxonomyContentItemId == taxonomyContentItemId && x.TermContentItemId.IsIn(termIds)));
+
+        <ul class="list-group mt-3">
+            @foreach (var displayItem in termDisplayItems)
+            {
+                var contentItemSummary = await ContentItemDisplayManager.BuildDisplayAsync(displayItem, Model.Context.Updater, "Summary", Model.Context.GroupId);
+
+                <li class="list-group-item">
+                    @await DisplayAsync(contentItemSummary)
+                </li>
+            }
+        </ul>
+    }
+}
+
+
+

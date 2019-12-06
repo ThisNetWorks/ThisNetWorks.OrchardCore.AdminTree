@@ -1,10 +1,7 @@
 using System;
-using System.Collections.Generic;
-using System.Collections.Specialized;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Localization;
-using OrchardCore.ContentManagement;
 using OrchardCore.ContentManagement.Display.ContentDisplay;
 using OrchardCore.ContentManagement.Display.Models;
 using OrchardCore.ContentManagement.Metadata;
@@ -12,7 +9,6 @@ using OrchardCore.ContentManagement.Metadata.Models;
 using OrchardCore.DisplayManagement.ModelBinding;
 using OrchardCore.DisplayManagement.Views;
 using OrchardCore.Taxonomies.Fields;
-using OrchardCore.Taxonomies.Models;
 using OrchardCore.Taxonomies.Settings;
 using ThisNetworks.OrchardCore.AdminTree.Models;
 using ThisNetworks.OrchardCore.AdminTree.ViewModels;
@@ -59,7 +55,8 @@ namespace ThisNetWorks.OrchardCore.AdminTree.Drivers
                     model.Multiple = part.Multiple;
                     model.ContainedContentTypes = entries;
                 });
-            } else
+            }
+            else
             {
                 return null;
             }

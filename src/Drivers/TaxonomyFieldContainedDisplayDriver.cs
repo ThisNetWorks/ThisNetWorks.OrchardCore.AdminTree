@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Localization;
-using Newtonsoft.Json.Linq;
 using OrchardCore.ContentManagement;
 using OrchardCore.ContentManagement.Display.ContentDisplay;
 using OrchardCore.ContentManagement.Display.Models;
@@ -30,6 +29,24 @@ namespace ThisNetWorks.OrchardCore.AdminTree.Drivers
         {
             _contentManager = contentManager;
             S = s;
+        }
+
+        public override IDisplayResult Display(TaxonomyField field, BuildFieldDisplayContext context)
+        {
+            if (String.Equals(context.PartFieldDefinition.Editor(), "Contained", StringComparison.OrdinalIgnoreCase))
+            {
+                return Initialize<DisplayTaxonomyFieldContainedViewModel>(GetDisplayShapeType(context), model =>
+                {
+                    model.Field = field;
+                    model.Part = context.ContentPart;
+                    model.PartFieldDefinition = context.PartFieldDefinition;
+                    model.Context = context;
+                })
+                .Location("Content")
+                .Location("SummaryAdmin", "");
+            }
+
+            return null;
         }
 
         public override IDisplayResult Edit(TaxonomyField field, BuildFieldEditorContext context)

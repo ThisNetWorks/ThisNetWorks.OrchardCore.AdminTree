@@ -50,8 +50,6 @@ else
                     };
                     var href = Url.Action("Create", "Admin", rvd);
 
-                    @*<a class="dropdown-item" asp-action="Create" asp-controller="Admin" asp-route-id="@containedContentTypeDefinition.Name" asp-route-area="OrchardCore.Contents" asp-route-ListPart.ContainerId="@Model.TermContentItem?.ContentItemId">@containedContentTypeDefinition.DisplayName</a>*@
-
                     <a class="dropdown-item" href="@href">@containedContentTypeDefinition.ContentTypeDefinition.DisplayName</a>
                 }
             </div>
