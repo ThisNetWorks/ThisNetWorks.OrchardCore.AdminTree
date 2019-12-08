@@ -1,0 +1,22 @@
+@model ThisNetWorks.OrchardCore.AdminTree.ViewModels.DisplayTaxonomyFieldContainedViewModel
+@using OrchardCore.Mvc.Utilities;
+@using OrchardCore.ContentManagement;
+@using Newtonsoft.Json.Linq;
+@using YesSql.Services;
+
+@inject OrchardCore.ContentManagement.Display.IContentItemDisplayManager ContentItemDisplayManager
+
+@{
+    var name = (Model.PartFieldDefinition.PartDefinition.Name + "-" + Model.PartFieldDefinition.Name).HtmlClassify();
+}
+
+<div class="field field-type-taxonomyfield field-name-@name">
+    @foreach (var contentItemId in Model.TermContentItemIds)
+    {
+        var term = await Orchard.GetTaxonomyTermAsync(Model.TaxonomyContentItemId, contentItemId);
+        <span class="badge badge-primary taxonomy-term">@term</span>
+        @* in the summary view we don't recurse, or we end up with everything, which is not desired. We could/might want to hide this with placement in summary as well
+            as it is a bit uncesesary, but that depends on what you want to see in your summary
+        *@
+    }
+</div>

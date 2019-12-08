@@ -1,0 +1,6 @@
+@model dynamic
+@{
+    var term = await Orchard.GetTaxonomyTermAsync(Model.TaxonomyContentItemId as string, Model.TermContentItemId as string);
+}
+<h1 class="taxonomy-term">@term</h1>
+

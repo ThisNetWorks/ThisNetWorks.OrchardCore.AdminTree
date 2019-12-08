@@ -1,0 +1,39 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Razor">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.0</TargetFramework>
+    <AddRazorSupportForMvc>true</AddRazorSupportForMvc>
+    <Configurations>Debug;Release</Configurations>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <FrameworkReference Include="Microsoft.AspNetCore.App" />
+  </ItemGroup>
+<!--
+  <ItemGroup>
+    <PackageReference Include="OrchardCore.Application.Cms.Core.Targets" Version="1.0.0-rc1-10854" />
+  </ItemGroup>
+-->
+  
+      <ItemGroup>
+    <ProjectReference Include="..\..\..\OrchardCore\OrchardCore.AdminMenu.Abstractions\OrchardCore.AdminMenu.Abstractions.csproj" />
+    <ProjectReference Include="..\..\..\OrchardCore\OrchardCore.ContentManagement.Abstractions\OrchardCore.ContentManagement.Abstractions.csproj" />
+    <ProjectReference Include="..\..\..\OrchardCore\OrchardCore.ContentManagement\OrchardCore.ContentManagement.csproj" />
+    <ProjectReference Include="..\..\..\OrchardCore\OrchardCore.DisplayManagement.Abstractions\OrchardCore.DisplayManagement.Abstractions.csproj" />
+    <ProjectReference Include="..\..\..\OrchardCore\OrchardCore.DisplayManagement\OrchardCore.DisplayManagement.csproj" />
+    <ProjectReference Include="..\..\..\OrchardCore\OrchardCore.Module.Targets\OrchardCore.Module.Targets.csproj" />
+    <ProjectReference Include="..\..\..\OrchardCore\OrchardCore.ResourceManagement\OrchardCore.ResourceManagement.csproj" />
+    <ProjectReference Include="..\..\OrchardCore.Autoroute\OrchardCore.Autoroute.csproj" />
+    <ProjectReference Include="..\..\OrchardCore.Contents\OrchardCore.Contents.csproj" />
+    <ProjectReference Include="..\..\OrchardCore.Taxonomies\OrchardCore.Taxonomies.csproj" />
+  </ItemGroup>
+  
+
+  <!-- 
+  
+  <ItemGroup>
+    <PackageReference Include="OrchardCore.Application.Cms.Core.Targets" Version="1.0.0-rc1-10854" />
+  </ItemGroup>
+  -->
+
+</Project>

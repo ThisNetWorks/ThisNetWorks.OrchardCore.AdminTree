@@ -1,0 +1,30 @@
+@model ThisNetworks.OrchardCore.AdminTree.ViewModels.TermContainerPartViewModel
+
+<div class="form-group">
+    <label asp-for="ContainedContentTypes">@T["Contained Content Types"]</label>
+    <span class="hint">@T["The content types that this term can contain, e.g. Articles for a Travel term."]</span>
+
+    <div class="row">
+        @for (int i = 0; i < Model.ContainedContentTypes.Count(); i++)
+        {
+            var name = Model.ContainedContentTypes[i].ContentTypeDisplayName;
+            var selected = Model.ContainedContentTypes[i].IsSelected;
+            <div class="col-xs-12 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+                <input type="hidden" name="@Html.NameFor(m => m.ContainedContentTypes[i].ContentTypeName)" value="@Model.ContainedContentTypes[i].ContentTypeName" />
+                <div class="custom-control custom-checkbox">
+                    <input asp-for="ContainedContentTypes[i].IsSelected" class="custom-control-input content-type-checkbox" />
+                    <label class="custom-control-label" for="@Html.IdFor(m => m.ContainedContentTypes[i].IsSelected)">@name</label>
+                </div>
+            </div>
+
+        }
+    </div>
+</div>
+
+<div class="form-group">
+    <div class="custom-control custom-checkbox">
+        <input asp-for="Multiple" type="checkbox" class="custom-control-input" />
+        <label class="custom-control-label" asp-for="Multiple">@T["Multiple"]</label>
+        <span class="hint">— @T["Whether more than one element can be added to this term."]</span>
+    </div>
+</div>

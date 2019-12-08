@@ -1,0 +1,6 @@
+@model ShapeViewModel<TaxonomyTermsAdminNode>
+
+<div class="@(Model.Value.Enabled ? "" : "disabled")">
+    <span>@T["Taxonomy Terms Tree"]</span>
+        <span class="text-muted">- @T["Taxonomy Terms tree"]</span>
+</div>

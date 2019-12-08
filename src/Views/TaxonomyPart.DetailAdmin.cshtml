@@ -1,0 +1,77 @@
+@model DisplayTaxonomyPartViewModel
+@using Microsoft.AspNetCore.Routing;
+
+@inject OrchardCore.ContentManagement.Display.IContentItemDisplayManager ContentItemDisplayManager
+@if (!Model.ContainedContentTypeDefinitions.Any())
+{
+    <p class="alert alert-warning">
+        <a asp-action="EditTypePart" asp-controller="Admin" asp-route-area="OrchardCore.ContentTypes" asp-route-id="@Model.TermContentItem?.ContentType" asp-route-name="TermContainerPart">@T["Please specify at least one contained content type."]</a>
+
+    </p>
+}
+else
+{
+    <h5>@Model.TermContentItem.DisplayText</h5>
+    if (Model.ContainedContentTypeDefinitions.Count() == 1)
+    {
+        var contentTypeDefinition = Model.ContainedContentTypeDefinitions.FirstOrDefault();
+
+        var rvd = new RouteValueDictionary
+            {
+                { "Area", "OrchardCore.Contents"},
+                { "Controller", "Admin"},
+                { "Action", "Create"},
+                { "Id", contentTypeDefinition.ContentTypeDefinition.Name},
+                { contentTypeDefinition.TaxonomyFieldName + ".TermContentItemId", Model.TermContentItem?.ContentItemId }
+            };
+        var href = Url.Action("Create", "Admin", rvd);
+
+        <a class="btn btn-primary" href="@href">
+            @T["Create {0}", contentTypeDefinition.ContentTypeDefinition.DisplayName]
+        </a>
+    }
+    else
+    {
+        <div class="dropdown">
+            <a class="btn btn-primary dropdown-toggle" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                @T["Create"]
+            </a>
+
+            <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+                @foreach (var containedContentTypeDefinition in Model.ContainedContentTypeDefinitions)
+                {
+                var rvd = new RouteValueDictionary
+                    {
+                        { "Area", "OrchardCore.Contents"},
+                        { "Controller", "Admin"},
+                        { "Action", "Create"},
+                        { "Id", containedContentTypeDefinition.ContentTypeDefinition.Name},
+                        { containedContentTypeDefinition.TaxonomyFieldName + ".TermContentItemId", Model.TermContentItem?.ContentItemId }
+                    };
+                    var href = Url.Action("Create", "Admin", rvd);
+
+                    <a class="dropdown-item" href="@href">@containedContentTypeDefinition.ContentTypeDefinition.DisplayName</a>
+                }
+            </div>
+        </div>
+    }
+    @if (Model.ContentItems.Any())
+    {
+        <ul class="list-group mt-3">
+            @foreach (var contentItem in Model.ContentItems)
+            {
+                var contentItemSummary = await ContentItemDisplayManager.BuildDisplayAsync(contentItem, Model.Context.Updater, "SummaryAdmin", Model.Context.GroupId);
+
+                <li class="list-group-item">
+                    @await DisplayAsync(contentItemSummary)
+                </li>
+            }
+        </ul>
+
+        @await DisplayAsync(Model.Pager)
+    }
+    else
+    {
+        <p class="alert alert-warning mt-3">@T["The term list is empty."]</p>
+    }
+}
