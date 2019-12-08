@@ -1,0 +1,1283 @@
+{
+  "name": "Categories",
+  "displayName": "Categories",
+  "description": "Sample content items and taxonomy for a taxonomy menu tree",
+  "author": "ThisNetWorks",
+  "website": "https://github.com/ThisNetWorks/ThisNetWorks.OrchardCore.AdminTree",
+  "version": "0.0.1",
+  "issetuprecipe": false,
+  "categories": "",
+  "tags": [],
+  "steps": [
+    {
+      "name": "Feature",
+      "enable": [
+        "OrchardCore.AdminMenu",
+        "ThisNetWorks.OrchardCore.AdminTree",
+        "ThisNetWorksAdminTheme"
+      ],
+      "disable": []
+    },
+    {
+      "name": "Themes",
+      "Admin": "ThisNetWorksAdminTheme"
+    },
+    {
+      "name": "ContentDefinition",
+      "ContentTypes": [
+        {
+          "Name": "Category",
+          "DisplayName": "Category",
+          "Settings": {
+            "ContentTypeSettings": {
+              "Creatable": true,
+              "Listable": true,
+              "Draftable": true,
+              "Versionable": true,
+              "Securable": true
+            },
+            "FullTextAspectSettings": {}
+          },
+          "ContentTypePartDefinitionRecords": [
+            {
+              "PartName": "Category",
+              "Name": "Category",
+              "Settings": {
+                "ContentTypePartSettings": {
+                  "Position": "1"
+                }
+              }
+            },
+            {
+              "PartName": "TitlePart",
+              "Name": "TitlePart",
+              "Settings": {
+                "ContentTypePartSettings": {
+                  "Position": "0"
+                }
+              }
+            },
+            {
+              "PartName": "TermContainerPart",
+              "Name": "TermContainerPart",
+              "Settings": {
+                "ContentTypePartSettings": {
+                  "Position": "2"
+                }
+              }
+            }
+          ]
+        },
+        {
+          "Name": "LeafArticle",
+          "DisplayName": "Leaf Article",
+          "Settings": {
+            "ContentTypeSettings": {
+              "Creatable": true,
+              "Listable": true,
+              "Draftable": true,
+              "Versionable": true,
+              "Securable": true
+            }
+          },
+          "ContentTypePartDefinitionRecords": [
+            {
+              "PartName": "LeafArticle",
+              "Name": "LeafArticle",
+              "Settings": {}
+            },
+            {
+              "PartName": "AutoroutePart",
+              "Name": "AutoroutePart",
+              "Settings": {
+                "ContentTypePartSettings": {},
+                "AutoroutePartSettings": {
+                  "Pattern": "{% assign parent_segments = ContentItem.Content.CategoryPart.Category.TermContentItemIds[0]\r\n| inherited_terms: ContentItem.Content.CategoryPart.Category.TaxonomyContentItemId | reverse \r\n%}\r\n\r\n{% for seg in parent_segments %}\r\n    {% if parent_segments.last != seg %}\r\n{{ seg.DisplayText | downcase | slugify | append: '/' }}\r\n    {% else %}\r\n{{ ContentItem.DisplayText | downcase | slugify }}\r\n    {% endif %}\r\n{% endfor %}"
+                },
+                "ContentIndexSettings": {}
+              }
+            },
+            {
+              "PartName": "CategoryPart",
+              "Name": "CategoryPart",
+              "Settings": {}
+            },
+            {
+              "PartName": "HtmlBodyPart",
+              "Name": "HtmlBodyPart",
+              "Settings": {
+                "ContentTypePartSettings": {
+                  "Editor": "Wysiwyg"
+                },
+                "HtmlBodyPartSettings": {},
+                "HtmlBodyPartTrumbowygEditorSettings": {
+                  "Options": "{\r\n    autogrow: true,\r\n    btns: [\r\n        [\"viewHTML\"],\r\n        [\"undo\", \"redo\"],\r\n        [\"formatting\"],\r\n        [\"strong\", \"em\", \"del\"],\r\n        [\"foreColor\", \"backColor\"],\r\n        [\"superscript\", \"subscript\"],\r\n        [\"link\"],\r\n        [\"image\"],\r\n        [\"align\"],\r\n        [\"unorderedList\", \"orderedList\"],\r\n        [\"horizontalRule\"],\r\n        [\"removeformat\"],\r\n        [\"fullscreen\"]\r\n    ],\r\n    btnsDef: {\r\n        align: {\r\n            dropdown: [\"justifyLeft\", \"justifyCenter\", \"justifyRight\", \"justifyFull\"],\r\n            ico: \"justifyLeft\"\r\n        },\r\n        image: {\r\n            dropdown: [\"insertImage\", \"base64\", \"noembed\"],\r\n            ico: \"insertImage\"\r\n        }\r\n    }\r\n}"
+                },
+                "ContentIndexSettings": {}
+              }
+            },
+            {
+              "PartName": "TitlePart",
+              "Name": "TitlePart",
+              "Settings": {}
+            }
+          ]
+        },
+        {
+          "Name": "BranchArticle",
+          "DisplayName": "Branch Article",
+          "Settings": {
+            "ContentTypeSettings": {
+              "Creatable": true,
+              "Listable": true,
+              "Draftable": true,
+              "Versionable": true,
+              "Securable": true
+            },
+            "FullTextAspectSettings": {}
+          },
+          "ContentTypePartDefinitionRecords": [
+            {
+              "PartName": "BranchArticle",
+              "Name": "BranchArticle",
+              "Settings": {
+                "ContentTypePartSettings": {
+                  "Position": "2"
+                }
+              }
+            },
+            {
+              "PartName": "AutoroutePart",
+              "Name": "AutoroutePart",
+              "Settings": {
+                "ContentTypePartSettings": {
+                  "Position": "3"
+                },
+                "AutoroutePartSettings": {
+                  "Pattern": "{% assign parent_segments = ContentItem.Content.CategoryPart.Category.TermContentItemIds[0]\r\n| inherited_terms: ContentItem.Content.CategoryPart.Category.TaxonomyContentItemId | reverse \r\n%}\r\n\r\n{% for seg in parent_segments %}\r\n    {% if parent_segments.last != seg %}\r\n{{ seg.DisplayText | downcase | slugify | append: '/' }}\r\n    {% else %}\r\n{{ seg.DisplayText | downcase | slugify }}\r\n    {% endif %}\r\n{% endfor %}"
+                },
+                "ContentIndexSettings": {}
+              }
+            },
+            {
+              "PartName": "CategoryPart",
+              "Name": "CategoryPart",
+              "Settings": {
+                "ContentTypePartSettings": {
+                  "Position": "4"
+                }
+              }
+            },
+            {
+              "PartName": "HtmlBodyPart",
+              "Name": "HtmlBodyPart",
+              "Settings": {
+                "ContentTypePartSettings": {
+                  "Position": "1",
+                  "Editor": "Wysiwyg"
+                },
+                "HtmlBodyPartSettings": {},
+                "HtmlBodyPartTrumbowygEditorSettings": {
+                  "Options": "{\r\n    autogrow: true,\r\n    btns: [\r\n        [\"viewHTML\"],\r\n        [\"undo\", \"redo\"],\r\n        [\"formatting\"],\r\n        [\"strong\", \"em\", \"del\"],\r\n        [\"foreColor\", \"backColor\"],\r\n        [\"superscript\", \"subscript\"],\r\n        [\"link\"],\r\n        [\"image\"],\r\n        [\"align\"],\r\n        [\"unorderedList\", \"orderedList\"],\r\n        [\"horizontalRule\"],\r\n        [\"removeformat\"],\r\n        [\"fullscreen\"]\r\n    ],\r\n    btnsDef: {\r\n        align: {\r\n            dropdown: [\"justifyLeft\", \"justifyCenter\", \"justifyRight\", \"justifyFull\"],\r\n            ico: \"justifyLeft\"\r\n        },\r\n        image: {\r\n            dropdown: [\"insertImage\", \"base64\", \"noembed\"],\r\n            ico: \"insertImage\"\r\n        }\r\n    }\r\n}"
+                },
+                "ContentIndexSettings": {}
+              }
+            },
+            {
+              "PartName": "TitlePart",
+              "Name": "TitlePart",
+              "Settings": {
+                "ContentTypePartSettings": {
+                  "Position": "0"
+                }
+              }
+            }
+          ]
+        }
+      ],
+      "ContentParts": [
+        {
+          "Name": "TermContainerPart",
+          "Settings": {
+            "ContentPartSettings": {
+              "Attachable": true,
+              "Description": "Provides a term container part for your taxonomy terms."
+            }
+          },
+          "ContentPartFieldDefinitionRecords": []
+        },
+        {
+          "Name": "CategoryPart",
+          "Settings": {
+            "ContentPartSettings": {
+              "Attachable": true,
+              "Description": "Provides a contained category taxonomy field"
+            }
+          },
+          "ContentPartFieldDefinitionRecords": [
+            {
+              "FieldName": "TaxonomyField",
+              "Name": "Category",
+              "Settings": {
+                "ContentPartFieldSettings": {
+                  "DisplayName": "Category",
+                  "Editor": "Contained",
+                  "DisplayMode": "Contained",
+                  "Position": "0"
+                },
+                "ContentIndexSettings": {},
+                "TaxonomyFieldSettings": {
+                  "TaxonomyContentItemId": "4a76hgxgws3wjr7n3a0k35w9cj"
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "content",
+      "data": [
+        {
+          "ContentItemId": "4a76hgxgws3wjr7n3a0k35w9cj",
+          "ContentItemVersionId": "4e9gpfbyhw0x5v7tcayj3rrjc0",
+          "ContentType": "Taxonomy",
+          "DisplayText": "Categories",
+          "Latest": true,
+          "Published": true,
+          "ModifiedUtc": "2019-12-07T17:22:23.0350339Z",
+          "PublishedUtc": "2019-12-07T17:22:23.0511009Z",
+          "CreatedUtc": "2019-11-26T05:32:43.0816754Z",
+          "Owner": "admin",
+          "Author": "admin",
+          "TitlePart": {
+            "Title": "Categories"
+          },
+          "AliasPart": {
+            "Alias": "categories"
+          },
+          "TaxonomyPart": {
+            "Terms": [
+              {
+                "ContentItemId": "4aqk23ca41sbawzwn80xean4cx",
+                "ContentItemVersionId": null,
+                "ContentType": "Category",
+                "DisplayText": "Articles",
+                "Latest": false,
+                "Published": false,
+                "ModifiedUtc": "2019-12-02T09:12:24.5678628Z",
+                "PublishedUtc": null,
+                "CreatedUtc": null,
+                "Owner": null,
+                "Author": "admin",
+                "Category": {},
+                "TitlePart": {
+                  "Title": "Articles"
+                },
+                "TermContainerPart": {
+                  "ContainedContentTypes": [
+                    "BranchArticle"
+                  ],
+                  "Multiple": false
+                },
+                "Terms": [
+                  {
+                    "ContentItemId": "49xqc9x9rq00es4bwsn1tpb0wb",
+                    "ContentItemVersionId": null,
+                    "ContentType": "Category",
+                    "DisplayText": "Travel",
+                    "Latest": false,
+                    "Published": false,
+                    "ModifiedUtc": "2019-11-26T05:32:52.4178125Z",
+                    "PublishedUtc": null,
+                    "CreatedUtc": null,
+                    "Owner": null,
+                    "Author": "admin",
+                    "Category": {},
+                    "TitlePart": {
+                      "Title": "Travel"
+                    },
+                    "Terms": [
+                      {
+                        "ContentItemId": "44y013q8vfspky5snj6n8jbtcw",
+                        "ContentItemVersionId": null,
+                        "ContentType": "Category",
+                        "DisplayText": "Sailing",
+                        "Latest": false,
+                        "Published": false,
+                        "ModifiedUtc": "2019-11-26T05:33:13.2514182Z",
+                        "PublishedUtc": null,
+                        "CreatedUtc": null,
+                        "Owner": null,
+                        "Author": "admin",
+                        "Category": {},
+                        "TitlePart": {
+                          "Title": "Sailing"
+                        },
+                        "TermContainerPart": {
+                          "ContainedContentTypes": [
+                            "BranchArticle"
+                          ],
+                          "Multiple": false
+                        },
+                        "Terms": [
+                          {
+                            "ContentItemId": "467vz0f14xe9zt79wftc7bcan0",
+                            "ContentItemVersionId": null,
+                            "ContentType": "Category",
+                            "DisplayText": "Sailing",
+                            "Latest": false,
+                            "Published": false,
+                            "ModifiedUtc": "2019-12-02T10:15:29.8447721Z",
+                            "PublishedUtc": null,
+                            "CreatedUtc": null,
+                            "Owner": null,
+                            "Author": "admin",
+                            "Category": {},
+                            "TitlePart": {
+                              "Title": "Sailing"
+                            },
+                            "TermContainerPart": {
+                              "ContainedContentTypes": [
+                                "LeafArticle"
+                              ],
+                              "Multiple": true
+                            }
+                          }
+                        ]
+                      },
+                      {
+                        "ContentItemId": "4epqrgjm1rey96r0b30h3n01w8",
+                        "ContentItemVersionId": null,
+                        "ContentType": "Category",
+                        "DisplayText": "Motorbike adventures",
+                        "Latest": false,
+                        "Published": false,
+                        "ModifiedUtc": "2019-11-26T05:33:34.5280613Z",
+                        "PublishedUtc": null,
+                        "CreatedUtc": null,
+                        "Owner": null,
+                        "Author": "admin",
+                        "Category": {},
+                        "TitlePart": {
+                          "Title": "Motorbike adventures"
+                        },
+                        "TermContainerPart": {
+                          "ContainedContentTypes": [
+                            "BranchArticle"
+                          ],
+                          "Multiple": false
+                        },
+                        "Terms": [
+                          {
+                            "ContentItemId": "49g0w4mq0mqzv2nn80ngf2eqxh",
+                            "ContentItemVersionId": null,
+                            "ContentType": "Category",
+                            "DisplayText": "Motorbike",
+                            "Latest": false,
+                            "Published": false,
+                            "ModifiedUtc": "2019-12-02T10:15:47.3844427Z",
+                            "PublishedUtc": null,
+                            "CreatedUtc": null,
+                            "Owner": null,
+                            "Author": "admin",
+                            "Category": {},
+                            "TitlePart": {
+                              "Title": "Motorbike"
+                            },
+                            "TermContainerPart": {
+                              "ContainedContentTypes": [
+                                "LeafArticle"
+                              ],
+                              "Multiple": true
+                            }
+                          }
+                        ]
+                      }
+                    ],
+                    "TermContainerPart": {
+                      "ContainedContentTypes": [
+                        "BranchArticle"
+                      ],
+                      "Multiple": false
+                    }
+                  },
+                  {
+                    "ContentItemId": "4fbyk1d53v1pa79qqb04da8343",
+                    "ContentItemVersionId": null,
+                    "ContentType": "Category",
+                    "DisplayText": "Food",
+                    "Latest": false,
+                    "Published": false,
+                    "ModifiedUtc": "2019-11-26T05:32:58.7448167Z",
+                    "PublishedUtc": null,
+                    "CreatedUtc": null,
+                    "Owner": null,
+                    "Author": "admin",
+                    "Category": {},
+                    "TitlePart": {
+                      "Title": "Food"
+                    },
+                    "Terms": [
+                      {
+                        "ContentItemId": "4m2j555am3zcjsmpjkmgzrded6",
+                        "ContentItemVersionId": null,
+                        "ContentType": "Category",
+                        "DisplayText": "Recipes",
+                        "Latest": false,
+                        "Published": false,
+                        "ModifiedUtc": "2019-12-02T10:26:44.5327623Z",
+                        "PublishedUtc": null,
+                        "CreatedUtc": null,
+                        "Owner": null,
+                        "Author": "admin",
+                        "Category": {},
+                        "TitlePart": {
+                          "Title": "Recipes"
+                        },
+                        "TermContainerPart": {
+                          "ContainedContentTypes": [
+                            "BranchArticle"
+                          ],
+                          "Multiple": false
+                        },
+                        "Terms": [
+                          {
+                            "ContentItemId": "492jnd93rtx6w6xs40hp8gcvnj",
+                            "ContentItemVersionId": null,
+                            "ContentType": "Category",
+                            "DisplayText": "Recipes",
+                            "Latest": false,
+                            "Published": false,
+                            "ModifiedUtc": "2019-11-26T05:33:47.3467022Z",
+                            "PublishedUtc": null,
+                            "CreatedUtc": null,
+                            "Owner": null,
+                            "Author": "admin",
+                            "Category": {},
+                            "TitlePart": {
+                              "Title": "Recipes"
+                            },
+                            "TermContainerPart": {
+                              "ContainedContentTypes": [
+                                "LeafArticle"
+                              ],
+                              "Multiple": true
+                            }
+                          }
+                        ]
+                      },
+                      {
+                        "ContentItemId": "4h1wms8c7r0f04mkhpqsgw70nr",
+                        "ContentItemVersionId": null,
+                        "ContentType": "Category",
+                        "DisplayText": "Cooking shows",
+                        "Latest": false,
+                        "Published": false,
+                        "ModifiedUtc": "2019-12-02T10:27:04.0347645Z",
+                        "PublishedUtc": null,
+                        "CreatedUtc": null,
+                        "Owner": null,
+                        "Author": "admin",
+                        "Category": {},
+                        "TitlePart": {
+                          "Title": "Cooking shows"
+                        },
+                        "TermContainerPart": {
+                          "ContainedContentTypes": [
+                            "BranchArticle"
+                          ],
+                          "Multiple": false
+                        },
+                        "Terms": [
+                          {
+                            "ContentItemId": "46vas3nrpqhgwt67b2m4vhe24c",
+                            "ContentItemVersionId": null,
+                            "ContentType": "Category",
+                            "DisplayText": "Cooking shows",
+                            "Latest": false,
+                            "Published": false,
+                            "ModifiedUtc": "2019-11-26T05:33:55.727973Z",
+                            "PublishedUtc": null,
+                            "CreatedUtc": null,
+                            "Owner": null,
+                            "Author": "admin",
+                            "Category": {},
+                            "TitlePart": {
+                              "Title": "Cooking shows"
+                            },
+                            "TermContainerPart": {
+                              "ContainedContentTypes": [
+                                "LeafArticle"
+                              ],
+                              "Multiple": true
+                            }
+                          }
+                        ]
+                      }
+                    ],
+                    "TermContainerPart": {
+                      "ContainedContentTypes": [
+                        "BranchArticle"
+                      ],
+                      "Multiple": false
+                    }
+                  },
+                  {
+                    "ContentItemId": "4bd8nhk8ce44e501v3sx88sjxw",
+                    "ContentItemVersionId": null,
+                    "ContentType": "Category",
+                    "DisplayText": "Foo",
+                    "Latest": false,
+                    "Published": false,
+                    "ModifiedUtc": "2019-12-01T14:42:16.4315053Z",
+                    "PublishedUtc": null,
+                    "CreatedUtc": null,
+                    "Owner": null,
+                    "Author": "admin",
+                    "Category": {},
+                    "TitlePart": {
+                      "Title": "Foo"
+                    },
+                    "TermContainerPart": {
+                      "ContainedContentTypes": [
+                        "BranchArticle"
+                      ],
+                      "Multiple": false
+                    },
+                    "Terms": [
+                      {
+                        "ContentItemId": "4r4kt82c4sgwa42sp5szg9bmx4",
+                        "ContentItemVersionId": null,
+                        "ContentType": "Category",
+                        "DisplayText": "Bar",
+                        "Latest": false,
+                        "Published": false,
+                        "ModifiedUtc": "2019-12-02T10:27:16.8006088Z",
+                        "PublishedUtc": null,
+                        "CreatedUtc": null,
+                        "Owner": null,
+                        "Author": "admin",
+                        "Category": {},
+                        "TitlePart": {
+                          "Title": "Bar"
+                        },
+                        "TermContainerPart": {
+                          "ContainedContentTypes": [
+                            "BranchArticle"
+                          ],
+                          "Multiple": false
+                        },
+                        "Terms": [
+                          {
+                            "ContentItemId": "46cvwn8wappc85bgbankjt56dz",
+                            "ContentItemVersionId": null,
+                            "ContentType": "Category",
+                            "DisplayText": "Bar",
+                            "Latest": false,
+                            "Published": false,
+                            "ModifiedUtc": "2019-12-01T14:43:31.821451Z",
+                            "PublishedUtc": null,
+                            "CreatedUtc": null,
+                            "Owner": null,
+                            "Author": "admin",
+                            "Category": {},
+                            "TitlePart": {
+                              "Title": "Bar"
+                            },
+                            "TermContainerPart": {
+                              "ContainedContentTypes": [
+                                "LeafArticle"
+                              ],
+                              "Multiple": true
+                            }
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              }
+            ],
+            "TermContentType": "Category"
+          }
+        },
+        {
+          "ContentItemId": "41fj08s4mwxg96xmah6g1w8p4q",
+          "ContentItemVersionId": "4kx1v3p32yket0c8bhjzg9zb4t",
+          "ContentType": "BranchArticle",
+          "DisplayText": "Articles",
+          "Latest": true,
+          "Published": true,
+          "ModifiedUtc": "2019-12-07T17:22:54.6710265Z",
+          "PublishedUtc": "2019-12-07T17:22:54.6868345Z",
+          "CreatedUtc": "2019-12-07T17:22:54.6868345Z",
+          "Owner": "admin",
+          "Author": "admin",
+          "BranchArticle": {},
+          "AutoroutePart": {
+            "Path": "articles",
+            "SetHomepage": false
+          },
+          "CategoryPart": {
+            "Category": {
+              "TaxonomyContentItemId": "4a76hgxgws3wjr7n3a0k35w9cj",
+              "TermContentItemIds": [
+                "4aqk23ca41sbawzwn80xean4cx"
+              ]
+            }
+          },
+          "HtmlBodyPart": {
+            "Html": "<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>"
+          },
+          "TitlePart": {
+            "Title": "Articles"
+          }
+        },
+        {
+          "ContentItemId": "4fjgq3b18fspgxv9dbftzcmk49",
+          "ContentItemVersionId": "44nd6bk7wnbwh061m1vm917p58",
+          "ContentType": "BranchArticle",
+          "DisplayText": "Travel",
+          "Latest": true,
+          "Published": true,
+          "ModifiedUtc": "2019-12-07T17:23:16.0057605Z",
+          "PublishedUtc": "2019-12-07T17:23:16.009512Z",
+          "CreatedUtc": "2019-12-07T17:23:16.009512Z",
+          "Owner": "admin",
+          "Author": "admin",
+          "BranchArticle": {},
+          "AutoroutePart": {
+            "Path": "articles/travel",
+            "SetHomepage": false
+          },
+          "CategoryPart": {
+            "Category": {
+              "TaxonomyContentItemId": "4a76hgxgws3wjr7n3a0k35w9cj",
+              "TermContentItemIds": [
+                "49xqc9x9rq00es4bwsn1tpb0wb"
+              ]
+            }
+          },
+          "HtmlBodyPart": {
+            "Html": "<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>"
+          },
+          "TitlePart": {
+            "Title": "Travel"
+          }
+        },
+        {
+          "ContentItemId": "4thsaf7esap6e5mhz46nggvndv",
+          "ContentItemVersionId": "4xh9pnbnyh7y5zbw5erzmncemz",
+          "ContentType": "BranchArticle",
+          "DisplayText": "Sailing",
+          "Latest": true,
+          "Published": true,
+          "ModifiedUtc": "2019-12-07T17:23:32.3759071Z",
+          "PublishedUtc": "2019-12-07T17:23:32.3824462Z",
+          "CreatedUtc": "2019-12-07T17:23:32.3824462Z",
+          "Owner": "admin",
+          "Author": "admin",
+          "BranchArticle": {},
+          "AutoroutePart": {
+            "Path": "articles/travel/sailing",
+            "SetHomepage": false
+          },
+          "CategoryPart": {
+            "Category": {
+              "TaxonomyContentItemId": "4a76hgxgws3wjr7n3a0k35w9cj",
+              "TermContentItemIds": [
+                "44y013q8vfspky5snj6n8jbtcw"
+              ]
+            }
+          },
+          "HtmlBodyPart": {
+            "Html": "<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>"
+          },
+          "TitlePart": {
+            "Title": "Sailing"
+          }
+        },
+        {
+          "ContentItemId": "4bygkdwkr7xgf4mzbwcews44xc",
+          "ContentItemVersionId": "4hmdxhpsttx8y0bbsq19tfxkwh",
+          "ContentType": "LeafArticle",
+          "DisplayText": "Antigua",
+          "Latest": true,
+          "Published": true,
+          "ModifiedUtc": "2019-12-07T17:24:07.2240029Z",
+          "PublishedUtc": "2019-12-07T17:24:07.2307069Z",
+          "CreatedUtc": "2019-12-07T17:24:07.2307069Z",
+          "Owner": "admin",
+          "Author": "admin",
+          "LeafArticle": {},
+          "AutoroutePart": {
+            "Path": "articles/travel/sailing/antigua",
+            "SetHomepage": false
+          },
+          "CategoryPart": {
+            "Category": {
+              "TaxonomyContentItemId": "4a76hgxgws3wjr7n3a0k35w9cj",
+              "TermContentItemIds": [
+                "467vz0f14xe9zt79wftc7bcan0"
+              ]
+            }
+          },
+          "HtmlBodyPart": {
+            "Html": "<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>"
+          },
+          "TitlePart": {
+            "Title": "Antigua"
+          }
+        },
+        {
+          "ContentItemId": "4f202cwk4k9jh5q0pz1w99qcmt",
+          "ContentItemVersionId": "4afpdfs9m5v345m40rbtr5n1n9",
+          "ContentType": "LeafArticle",
+          "DisplayText": "Martinique",
+          "Latest": true,
+          "Published": true,
+          "ModifiedUtc": "2019-12-07T17:24:21.9998583Z",
+          "PublishedUtc": "2019-12-07T17:24:22.0027729Z",
+          "CreatedUtc": "2019-12-07T17:24:22.0027729Z",
+          "Owner": "admin",
+          "Author": "admin",
+          "LeafArticle": {},
+          "AutoroutePart": {
+            "Path": "articles/travel/sailing/martinique",
+            "SetHomepage": false
+          },
+          "CategoryPart": {
+            "Category": {
+              "TaxonomyContentItemId": "4a76hgxgws3wjr7n3a0k35w9cj",
+              "TermContentItemIds": [
+                "467vz0f14xe9zt79wftc7bcan0"
+              ]
+            }
+          },
+          "HtmlBodyPart": {
+            "Html": "<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>"
+          },
+          "TitlePart": {
+            "Title": "Martinique"
+          }
+        },
+        {
+          "ContentItemId": "49qah2sf9xhhw4pcsdxq30ntne",
+          "ContentItemVersionId": "4gpe64qz5pqb75wbfjws9vw9x9",
+          "ContentType": "LeafArticle",
+          "DisplayText": "Caribbean RORC 600",
+          "Latest": true,
+          "Published": true,
+          "ModifiedUtc": "2019-12-07T17:25:15.5469956Z",
+          "PublishedUtc": "2019-12-07T17:25:15.5538272Z",
+          "CreatedUtc": "2019-12-07T17:25:15.5538272Z",
+          "Owner": "admin",
+          "Author": "admin",
+          "LeafArticle": {},
+          "AutoroutePart": {
+            "Path": "articles/travel/sailing/caribbean-rorc-600",
+            "SetHomepage": false
+          },
+          "CategoryPart": {
+            "Category": {
+              "TaxonomyContentItemId": "4a76hgxgws3wjr7n3a0k35w9cj",
+              "TermContentItemIds": [
+                "467vz0f14xe9zt79wftc7bcan0"
+              ]
+            }
+          },
+          "HtmlBodyPart": {
+            "Html": "<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>"
+          },
+          "TitlePart": {
+            "Title": "Caribbean RORC 600"
+          }
+        },
+        {
+          "ContentItemId": "4y56jwv4pyecbrhjvjge28s84n",
+          "ContentItemVersionId": "49efwxwmze85y1cx4ch70spkns",
+          "ContentType": "LeafArticle",
+          "DisplayText": "Americas Cup 2021",
+          "Latest": true,
+          "Published": true,
+          "ModifiedUtc": "2019-12-07T17:25:43.0757762Z",
+          "PublishedUtc": "2019-12-07T17:25:43.0860664Z",
+          "CreatedUtc": "2019-12-07T17:25:43.0860664Z",
+          "Owner": "admin",
+          "Author": "admin",
+          "LeafArticle": {},
+          "AutoroutePart": {
+            "Path": "articles/travel/sailing/americas-cup-2021",
+            "SetHomepage": false
+          },
+          "CategoryPart": {
+            "Category": {
+              "TaxonomyContentItemId": "4a76hgxgws3wjr7n3a0k35w9cj",
+              "TermContentItemIds": [
+                "467vz0f14xe9zt79wftc7bcan0"
+              ]
+            }
+          },
+          "HtmlBodyPart": {
+            "Html": "<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>"
+          },
+          "TitlePart": {
+            "Title": "Americas Cup 2021"
+          }
+        },
+        {
+          "ContentItemId": "4ygw81mxrpcffsy721wjmvp6wz",
+          "ContentItemVersionId": "4pxtt6gk7hz73r62yc1rdqdrxv",
+          "ContentType": "BranchArticle",
+          "DisplayText": "Motorbike adventures",
+          "Latest": true,
+          "Published": true,
+          "ModifiedUtc": "2019-12-07T17:26:09.4591475Z",
+          "PublishedUtc": "2019-12-07T17:26:09.469386Z",
+          "CreatedUtc": "2019-12-07T17:26:09.469386Z",
+          "Owner": "admin",
+          "Author": "admin",
+          "BranchArticle": {},
+          "AutoroutePart": {
+            "Path": "articles/travel/motorbike-adventures",
+            "SetHomepage": false
+          },
+          "CategoryPart": {
+            "Category": {
+              "TaxonomyContentItemId": "4a76hgxgws3wjr7n3a0k35w9cj",
+              "TermContentItemIds": [
+                "4epqrgjm1rey96r0b30h3n01w8"
+              ]
+            }
+          },
+          "HtmlBodyPart": {
+            "Html": "<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>"
+          },
+          "TitlePart": {
+            "Title": "Motorbike adventures"
+          }
+        },
+        {
+          "ContentItemId": "4p3gqqxhj3hej0m064gfav1mwm",
+          "ContentItemVersionId": "4hb2erz8fgvrv093b6y9x7k5m5",
+          "ContentType": "LeafArticle",
+          "DisplayText": "Manfield",
+          "Latest": true,
+          "Published": true,
+          "ModifiedUtc": "2019-12-07T17:26:25.8108728Z",
+          "PublishedUtc": "2019-12-07T17:26:25.8142088Z",
+          "CreatedUtc": "2019-12-07T17:26:25.8142088Z",
+          "Owner": "admin",
+          "Author": "admin",
+          "LeafArticle": {},
+          "AutoroutePart": {
+            "Path": "articles/travel/motorbike-adventures/manfield",
+            "SetHomepage": false
+          },
+          "CategoryPart": {
+            "Category": {
+              "TaxonomyContentItemId": "4a76hgxgws3wjr7n3a0k35w9cj",
+              "TermContentItemIds": [
+                "49g0w4mq0mqzv2nn80ngf2eqxh"
+              ]
+            }
+          },
+          "HtmlBodyPart": {
+            "Html": "<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>"
+          },
+          "TitlePart": {
+            "Title": "Manfield"
+          }
+        },
+        {
+          "ContentItemId": "4at9y6sy7jcyp62ytpf38qy8wm",
+          "ContentItemVersionId": "41b2km1643r0ev5k19emezs64s",
+          "ContentType": "LeafArticle",
+          "DisplayText": "The Takaka Hill",
+          "Latest": true,
+          "Published": true,
+          "ModifiedUtc": "2019-12-07T17:26:38.9650985Z",
+          "PublishedUtc": "2019-12-07T17:26:38.9763346Z",
+          "CreatedUtc": "2019-12-07T17:26:38.9763346Z",
+          "Owner": "admin",
+          "Author": "admin",
+          "LeafArticle": {},
+          "AutoroutePart": {
+            "Path": "articles/travel/motorbike-adventures/the-takaka-hill",
+            "SetHomepage": false
+          },
+          "CategoryPart": {
+            "Category": {
+              "TaxonomyContentItemId": "4a76hgxgws3wjr7n3a0k35w9cj",
+              "TermContentItemIds": [
+                "49g0w4mq0mqzv2nn80ngf2eqxh"
+              ]
+            }
+          },
+          "HtmlBodyPart": {
+            "Html": "<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>"
+          },
+          "TitlePart": {
+            "Title": "The Takaka Hill"
+          }
+        },
+        {
+          "ContentItemId": "4k8557nxys9vrv73723e7cay4t",
+          "ContentItemVersionId": "4xskyf5td2ap4s2fg4v52c8pw4",
+          "ContentType": "BranchArticle",
+          "DisplayText": "Food",
+          "Latest": true,
+          "Published": true,
+          "ModifiedUtc": "2019-12-07T17:26:52.6275719Z",
+          "PublishedUtc": "2019-12-07T17:26:52.6426965Z",
+          "CreatedUtc": "2019-12-07T17:26:52.6426965Z",
+          "Owner": "admin",
+          "Author": "admin",
+          "BranchArticle": {},
+          "AutoroutePart": {
+            "Path": "articles/food",
+            "SetHomepage": false
+          },
+          "CategoryPart": {
+            "Category": {
+              "TaxonomyContentItemId": "4a76hgxgws3wjr7n3a0k35w9cj",
+              "TermContentItemIds": [
+                "4fbyk1d53v1pa79qqb04da8343"
+              ]
+            }
+          },
+          "HtmlBodyPart": {
+            "Html": "<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>"
+          },
+          "TitlePart": {
+            "Title": "Food"
+          }
+        },
+        {
+          "ContentItemId": "4r8bcjbwdr9m41ab2pbj2726cp",
+          "ContentItemVersionId": "44t1m0y37h2xhzdv6vkd1y0fc1",
+          "ContentType": "BranchArticle",
+          "DisplayText": "Recipes",
+          "Latest": true,
+          "Published": true,
+          "ModifiedUtc": "2019-12-07T17:27:03.7614074Z",
+          "PublishedUtc": "2019-12-07T17:27:03.7713003Z",
+          "CreatedUtc": "2019-12-07T17:27:03.7713003Z",
+          "Owner": "admin",
+          "Author": "admin",
+          "BranchArticle": {},
+          "AutoroutePart": {
+            "Path": "articles/food/recipes",
+            "SetHomepage": false
+          },
+          "CategoryPart": {
+            "Category": {
+              "TaxonomyContentItemId": "4a76hgxgws3wjr7n3a0k35w9cj",
+              "TermContentItemIds": [
+                "4m2j555am3zcjsmpjkmgzrded6"
+              ]
+            }
+          },
+          "HtmlBodyPart": {
+            "Html": "<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>"
+          },
+          "TitlePart": {
+            "Title": "Recipes"
+          }
+        },
+        {
+          "ContentItemId": "4djmbgkqhqeyz017t2qzd0gx41",
+          "ContentItemVersionId": "4mx7em5x7d8zv55g2h7fgpr9cw",
+          "ContentType": "LeafArticle",
+          "DisplayText": "Thai beef salad",
+          "Latest": true,
+          "Published": true,
+          "ModifiedUtc": "2019-12-07T17:27:15.8737701Z",
+          "PublishedUtc": "2019-12-07T17:27:15.876592Z",
+          "CreatedUtc": "2019-12-07T17:27:15.876592Z",
+          "Owner": "admin",
+          "Author": "admin",
+          "LeafArticle": {},
+          "AutoroutePart": {
+            "Path": "articles/food/recipes/thai-beef-salad",
+            "SetHomepage": false
+          },
+          "CategoryPart": {
+            "Category": {
+              "TaxonomyContentItemId": "4a76hgxgws3wjr7n3a0k35w9cj",
+              "TermContentItemIds": [
+                "492jnd93rtx6w6xs40hp8gcvnj"
+              ]
+            }
+          },
+          "HtmlBodyPart": {
+            "Html": "<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>"
+          },
+          "TitlePart": {
+            "Title": "Thai beef salad"
+          }
+        },
+        {
+          "ContentItemId": "48fp5sqfssss3tg8hsppjdrtxt",
+          "ContentItemVersionId": "4jd4g85bfahne5654mh4851adp",
+          "ContentType": "BranchArticle",
+          "DisplayText": "Cooking shows",
+          "Latest": true,
+          "Published": true,
+          "ModifiedUtc": "2019-12-07T17:27:49.8037158Z",
+          "PublishedUtc": "2019-12-07T17:27:49.8141936Z",
+          "CreatedUtc": "2019-12-07T17:27:49.8141936Z",
+          "Owner": "admin",
+          "Author": "admin",
+          "BranchArticle": {},
+          "AutoroutePart": {
+            "Path": "articles/food/cooking-shows",
+            "SetHomepage": false
+          },
+          "CategoryPart": {
+            "Category": {
+              "TaxonomyContentItemId": "4a76hgxgws3wjr7n3a0k35w9cj",
+              "TermContentItemIds": [
+                "4h1wms8c7r0f04mkhpqsgw70nr"
+              ]
+            }
+          },
+          "HtmlBodyPart": {
+            "Html": "<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>"
+          },
+          "TitlePart": {
+            "Title": "Cooking shows"
+          }
+        },
+        {
+          "ContentItemId": "4e45798146b745pyz9bmr1r6x2",
+          "ContentItemVersionId": "4fcvy4jgx9zk23f1tn5v5f74cf",
+          "ContentType": "LeafArticle",
+          "DisplayText": "Masterchef ",
+          "Latest": true,
+          "Published": true,
+          "ModifiedUtc": "2019-12-07T17:28:02.3421854Z",
+          "PublishedUtc": "2019-12-07T17:28:02.3570097Z",
+          "CreatedUtc": "2019-12-07T17:28:02.3570097Z",
+          "Owner": "admin",
+          "Author": "admin",
+          "LeafArticle": {},
+          "AutoroutePart": {
+            "Path": "articles/food/cooking-shows/masterchef",
+            "SetHomepage": false
+          },
+          "CategoryPart": {
+            "Category": {
+              "TaxonomyContentItemId": "4a76hgxgws3wjr7n3a0k35w9cj",
+              "TermContentItemIds": [
+                "46vas3nrpqhgwt67b2m4vhe24c"
+              ]
+            }
+          },
+          "HtmlBodyPart": {
+            "Html": null
+          },
+          "TitlePart": {
+            "Title": "Masterchef "
+          }
+        },
+        {
+          "ContentItemId": "4qjptf5geemv53xvbesvfhdvd1",
+          "ContentItemVersionId": "4p3dwz5rahrbqrc6gydrn6vy4s",
+          "ContentType": "LeafArticle",
+          "DisplayText": "My Kitchen Rules",
+          "Latest": true,
+          "Published": true,
+          "ModifiedUtc": "2019-12-07T17:28:15.9259561Z",
+          "PublishedUtc": "2019-12-07T17:28:15.9292643Z",
+          "CreatedUtc": "2019-12-07T17:28:15.9292643Z",
+          "Owner": "admin",
+          "Author": "admin",
+          "LeafArticle": {},
+          "AutoroutePart": {
+            "Path": "articles/food/cooking-shows/my-kitchen-rules",
+            "SetHomepage": false
+          },
+          "CategoryPart": {
+            "Category": {
+              "TaxonomyContentItemId": "4a76hgxgws3wjr7n3a0k35w9cj",
+              "TermContentItemIds": [
+                "46vas3nrpqhgwt67b2m4vhe24c"
+              ]
+            }
+          },
+          "HtmlBodyPart": {
+            "Html": null
+          },
+          "TitlePart": {
+            "Title": "My Kitchen Rules"
+          }
+        },
+        {
+          "ContentItemId": "4h711dhj7ykc9yqqk8tjs5g5c8",
+          "ContentItemVersionId": "4qhr13v687h7g45jx3bxvwvfc8",
+          "ContentType": "BranchArticle",
+          "DisplayText": "Foo",
+          "Latest": true,
+          "Published": true,
+          "ModifiedUtc": "2019-12-07T17:28:28.8865007Z",
+          "PublishedUtc": "2019-12-07T17:28:28.8890074Z",
+          "CreatedUtc": "2019-12-07T17:28:28.8890074Z",
+          "Owner": "admin",
+          "Author": "admin",
+          "BranchArticle": {},
+          "AutoroutePart": {
+            "Path": "articles/foo",
+            "SetHomepage": false
+          },
+          "CategoryPart": {
+            "Category": {
+              "TaxonomyContentItemId": "4a76hgxgws3wjr7n3a0k35w9cj",
+              "TermContentItemIds": [
+                "4bd8nhk8ce44e501v3sx88sjxw"
+              ]
+            }
+          },
+          "HtmlBodyPart": {
+            "Html": null
+          },
+          "TitlePart": {
+            "Title": "Foo"
+          }
+        },
+        {
+          "ContentItemId": "464nyj9vts6bpsccxvv8jp6knb",
+          "ContentItemVersionId": "44xhw094abzn73zgk2qpv1r2cp",
+          "ContentType": "BranchArticle",
+          "DisplayText": "Bar",
+          "Latest": true,
+          "Published": true,
+          "ModifiedUtc": "2019-12-07T17:28:41.4498138Z",
+          "PublishedUtc": "2019-12-07T17:28:41.4521604Z",
+          "CreatedUtc": "2019-12-07T17:28:41.4521604Z",
+          "Owner": "admin",
+          "Author": "admin",
+          "BranchArticle": {},
+          "AutoroutePart": {
+            "Path": "articles/foo/bar",
+            "SetHomepage": false
+          },
+          "CategoryPart": {
+            "Category": {
+              "TaxonomyContentItemId": "4a76hgxgws3wjr7n3a0k35w9cj",
+              "TermContentItemIds": [
+                "4r4kt82c4sgwa42sp5szg9bmx4"
+              ]
+            }
+          },
+          "HtmlBodyPart": {
+            "Html": "<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>"
+          },
+          "TitlePart": {
+            "Title": "Bar"
+          }
+        },
+        {
+          "ContentItemId": "42rd7tt7my0bjrg3meaj9wpg4z",
+          "ContentItemVersionId": "4zydqdn790vvd3451fqzqe26x5",
+          "ContentType": "LeafArticle",
+          "DisplayText": "Bar1",
+          "Latest": true,
+          "Published": true,
+          "ModifiedUtc": "2019-12-07T17:28:56.7418918Z",
+          "PublishedUtc": "2019-12-07T17:28:56.7497024Z",
+          "CreatedUtc": "2019-12-07T17:28:56.7497024Z",
+          "Owner": "admin",
+          "Author": "admin",
+          "LeafArticle": {},
+          "AutoroutePart": {
+            "Path": "articles/foo/bar/bar1",
+            "SetHomepage": false
+          },
+          "CategoryPart": {
+            "Category": {
+              "TaxonomyContentItemId": "4a76hgxgws3wjr7n3a0k35w9cj",
+              "TermContentItemIds": [
+                "46cvwn8wappc85bgbankjt56dz"
+              ]
+            }
+          },
+          "HtmlBodyPart": {
+            "Html": null
+          },
+          "TitlePart": {
+            "Title": "Bar1"
+          }
+        },
+        {
+          "ContentItemId": "4hs1k92kth4ct6tpcccygk83n3",
+          "ContentItemVersionId": "4k5xra8vvj0tty0s6cc36vefw1",
+          "ContentType": "LeafArticle",
+          "DisplayText": "Bar2",
+          "Latest": true,
+          "Published": true,
+          "ModifiedUtc": "2019-12-07T17:29:09.2504607Z",
+          "PublishedUtc": "2019-12-07T17:29:09.2711704Z",
+          "CreatedUtc": "2019-12-07T17:29:09.2711704Z",
+          "Owner": "admin",
+          "Author": "admin",
+          "LeafArticle": {},
+          "AutoroutePart": {
+            "Path": "articles/foo/bar/bar2",
+            "SetHomepage": false
+          },
+          "CategoryPart": {
+            "Category": {
+              "TaxonomyContentItemId": "4a76hgxgws3wjr7n3a0k35w9cj",
+              "TermContentItemIds": [
+                "46cvwn8wappc85bgbankjt56dz"
+              ]
+            }
+          },
+          "HtmlBodyPart": {
+            "Html": null
+          },
+          "TitlePart": {
+            "Title": "Bar2"
+          }
+        }
+      ]
+    },
+    {
+      "name": "AdminMenu",
+      "data": [
+        {
+          "Id": "eac8a5842d6a4c6ab0edf4804e229492",
+          "Name": "Taxonomy Terms Menu",
+          "Enabled": true,
+          "MenuItems": [
+            {
+              "$type": "ThisNetWorks.OrchardCore.AdminTree.AdminNodes.TaxonomyTermsAdminNode, ThisNetWorks.OrchardCore.AdminTree",
+              "TaxonomyContentItemId": "4a76hgxgws3wjr7n3a0k35w9cj",
+              "IconForTree": "fas fa-tree",
+              "TaxonomyDisplayPattern": "{{ ContentItem | display_text }}",
+              "TermDisplayPattern": "{{ ContentItem | display_text }}",
+              "UniqueId": "80e55175f4734c4e81fdda44d03b9ac4",
+              "Enabled": true,
+              "Text": null,
+              "Id": null,
+              "Href": null,
+              "Url": null,
+              "Position": null,
+              "Priority": 0,
+              "LinkToFirstChild": true,
+              "LocalNav": false,
+              "Culture": null,
+              "Resource": null,
+              "Items": [],
+              "RouteValues": null,
+              "Permissions": [],
+              "Classes": []
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
