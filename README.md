@@ -3,7 +3,7 @@ An Admin Tree Module for Orchard Core
 
 ## Getting Started
 
-Currently this module is intended to be build using the Orchard Core dev branch.
+Currently this module is intended to be build using the Orchard Core `dev/deanmarcussen/tags` branch.
 
 It requires an adapted [Orchard Core Admin Theme](https://github.com/ThisNetWorks/ThisNetWorks.OrchardCore.Themes)
 
