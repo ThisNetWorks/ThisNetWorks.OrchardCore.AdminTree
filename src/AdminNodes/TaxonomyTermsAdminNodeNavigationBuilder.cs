@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.Encodings.Web;
 using System.Threading.Tasks;
 using Fluid;
 using Microsoft.AspNetCore.Http;
@@ -29,7 +30,8 @@ namespace ThisNetWorks.OrchardCore.AdminTree.AdminNodes
         private readonly ISiteService _siteService;
         private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly IContentDefinitionManager _contentDefinitionManager;
-        private readonly ILiquidTemplateManager _liquidTemplatemanager;
+        private readonly ILiquidTemplateManager _liquidTemplateManager;
+        private readonly HtmlEncoder _htmlEncoder;
         private readonly IContentManager _contentManager;
         private readonly YesSql.ISession _session;
         private readonly ILogger _logger;
@@ -43,6 +45,7 @@ namespace ThisNetWorks.OrchardCore.AdminTree.AdminNodes
             IHttpContextAccessor httpContextAccessor,
             IContentDefinitionManager contentDefinitionManager,
             ILiquidTemplateManager liquidTemplateManager,
+            HtmlEncoder htmlEncoder,
             IContentManager contentManager,
             YesSql.ISession session,
             IStringLocalizer<TaxonomyTermsAdminNodeNavigationBuilder> stringLocalizer,
@@ -52,7 +55,8 @@ namespace ThisNetWorks.OrchardCore.AdminTree.AdminNodes
             _siteService = siteService;
             _httpContextAccessor = httpContextAccessor;
             _contentDefinitionManager = contentDefinitionManager;
-            _liquidTemplatemanager = liquidTemplateManager;
+            _liquidTemplateManager = liquidTemplateManager;
+            _htmlEncoder = htmlEncoder;
             _contentManager = contentManager;
             _session = session;
             _logger = logger;
@@ -92,7 +96,15 @@ namespace ThisNetWorks.OrchardCore.AdminTree.AdminNodes
             var templateContext = new TemplateContext();
             templateContext.SetValue("ContentItem", taxonomy);
 
-            var taxonomyDisplayText = await _liquidTemplatemanager.RenderAsync(node.TaxonomyDisplayPattern, NullEncoder.Default, templateContext);
+            var model = new TaxonomyViewModel
+            {
+                ContentItem = taxonomy
+            };
+
+            var taxonomyDisplayText = await _liquidTemplateManager.RenderAsync(node.TaxonomyDisplayPattern, _htmlEncoder, model,
+                scope => scope.SetValue("ContentItem", model.ContentItem));
+
+            //var taxonomyDisplayText = await _liquidTemplateManager.RenderAsync(node.TaxonomyDisplayPattern, NullEncoder.Default, templateContext);
 
             var termEntries = new List<TermMenuEntry>();
             PopulateTermEntries(termEntries, taxonomy.As<TaxonomyPart>().Terms, 0);
@@ -207,6 +219,11 @@ namespace ThisNetWorks.OrchardCore.AdminTree.AdminNodes
             public TermMenuEntry Parent { get; set; }
             public int Level { get; set; }
             public bool IsLeaf { get; set; }
+        }
+
+        public class TaxonomyViewModel
+        {
+            public ContentItem ContentItem { get; set; }
         }
     }
 }
