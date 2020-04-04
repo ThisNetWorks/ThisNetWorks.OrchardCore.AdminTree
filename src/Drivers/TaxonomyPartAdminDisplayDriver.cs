@@ -19,12 +19,12 @@ using ThisNetWorks.OrchardCore.AdminTree.ViewModels;
 
 namespace ThisNetWorks.OrchardCore.AdminTree.Drivers
 {
-    public class TaxonomyPartDisplayDriver : ContentPartDisplayDriver<TaxonomyPart>
+    public class TaxonomyPartAdminDisplayDriver : ContentPartDisplayDriver<TaxonomyPart>
     {
         private readonly IOrchardHelper _orchardHelper;
         private readonly IContentDefinitionManager _contentDefinitionManager;
 
-        public TaxonomyPartDisplayDriver(
+        public TaxonomyPartAdminDisplayDriver(
             IOrchardHelper orchardHelper,
             IContentDefinitionManager contentDefinitionManager
             )
