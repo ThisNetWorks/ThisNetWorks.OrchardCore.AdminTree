@@ -7,6 +7,7 @@
     var settings = Model.PartFieldDefinition.GetSettings<TaxonomyFieldSettings>();
     int previousLevel = 0;
     var moveDivId = (Model.PartFieldDefinition.Name + "Move").HtmlClassify();
+    int closingDivs = 0;
 }
 
 <label>@Model.PartFieldDefinition.DisplayName()</label>
@@ -40,11 +41,13 @@
         if (entry.Level == previousLevel + 1)
         {
             WriteLiteral("<div class=\"pl-3\">");
+            closingDivs = entry.Level;
         }
 
         for (var e = entry.Level; e < previousLevel; e++)
         {
             WriteLiteral("</div>");
+            closingDivs = 0;
         }
 
         @if (!settings.Unique)
@@ -94,5 +97,12 @@
         }
 
         previousLevel = entry.Level;
+    }
+    @if (closingDivs > 0)
+    {
+        for (var e = 0; e < closingDivs; e++)
+        {
+            WriteLiteral("</div>");
+        }
     }
 </div>
